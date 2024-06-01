@@ -45,15 +45,15 @@ namespace WebApi_SchoolProject.Controllers
         [HttpPost("chargeAccount")]
         public async Task<IActionResult> ChargeAccount([FromBody]ChargeRequest chargequest)
         {
-            var userNameClaim = User.FindFirst(ClaimTypes.Name);
+            var userNameClaim =  User.FindFirst(ClaimTypes.Name);
             if (userNameClaim == null)
             {
                 return Unauthorized("User not authenticated");
             }
             var account = await _studentService.GetAccountFromUsername(userNameClaim.Value);
-            _transactionManagerService.AddCredit(account, chargequest.amount);
+             await _transactionManagerService.AddCredit(account, chargequest.amount);
             //The transaction is done by the Student Himself
-            _transactionManagerService.WriteTransaction(account.UUID, account.UUID, chargequest.amount);
+            await _transactionManagerService.WriteTransaction(account.UUID, account.UUID, chargequest.amount);
             return Ok("Account charged successfully");
         }
 

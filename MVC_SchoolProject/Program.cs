@@ -17,10 +17,7 @@ namespace MVC_SchoolProject
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
             // Register services
-            // Singleton HttpClient instance to use the same instance for every request
-            // Ensures that the token follows across requests
-            // Debugging took 1 HOUR to find the solution manually.
-            //builder.Services.AddSingleton<HttpClient>();
+
             builder.Services.AddHttpClient<AuthService, AuthService>();
             // Add scoped services for AuthService and StudentService
             // Scoped lifetime means services are created once per request within the scope

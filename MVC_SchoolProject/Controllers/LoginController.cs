@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MVC_SchoolProject.Models;
 using MVC_SchoolProject.Services;
+using System.Net.Http.Headers;
 
 namespace MVC_SchoolProject.Controllers
 {
@@ -9,11 +10,13 @@ namespace MVC_SchoolProject.Controllers
 
         private readonly AuthService _authService;
         private readonly StudentService _studentService;
+        private readonly HttpClient _httpClient;
 
-        public LoginController(AuthService authService, StudentService studentService)
+        public LoginController(AuthService authService, StudentService studentService, HttpClient httpClient)
         {
             _authService = authService;
             _studentService = studentService;
+            _httpClient = httpClient;
         }
 
         //Login page
@@ -30,8 +33,9 @@ namespace MVC_SchoolProject.Controllers
                 if (token != null)
                 {
                     HttpContext.Session.SetString("token", token);
-                    var userInfo = await _studentService.checkInfo();
+                var userInfo = await _studentService.checkInfo();
                 // Redirect to the student info page
+
                 if (userInfo.DepartmentId == 1)
                 {
                     return RedirectToAction("Info", "Student");

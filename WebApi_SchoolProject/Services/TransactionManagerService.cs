@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using WebApi_SchoolProject.Models;
 
 namespace WebApi_SchoolProject.Services
@@ -18,31 +19,30 @@ namespace WebApi_SchoolProject.Services
             return (int)(amount / 0.05);
         }
 
-        public void AddCredit(Account account , double amount)
+        public async Task AddCredit(Account account , double amount)
         {
             account.Amount += amount;
-            _schoolContext.SaveChangesAsync();
+
+            await _schoolContext.SaveChangesAsync();
         }
 
-        public void  WriteTransaction(Guid accountCredited, Guid accountSender, double amount)
+        public async Task  WriteTransaction(Guid accountCredited, Guid accountSender, double amount)
         {
             //Possible to do it with the table Account but we need to do one more link
-            var credited =  _schoolContext.Accounts.FirstOrDefault(c=>c.UUID == accountCredited);
-            var sender = _schoolContext.Accounts.FirstOrDefault(s => s.UUID == accountSender);
+            var credited = await _schoolContext.Accounts.FirstOrDefaultAsync(c => c.UUID == accountCredited);
+            var sender = await _schoolContext.Accounts.FirstOrDefaultAsync(s => s.UUID == accountSender);
             var transaction = new Transaction
             {
-                Receiver = credited.UUID,
+                Receiver =  credited.UUID,
                 Sender = sender.UUID,
                 Amount = amount,
                 DateOnly = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                 
             };
             _schoolContext.Transactions.Add(transaction);
-            _schoolContext.SaveChanges();
+            await _schoolContext.SaveChangesAsync();
             
-        }
-
-        
+        } 
 
         
     }

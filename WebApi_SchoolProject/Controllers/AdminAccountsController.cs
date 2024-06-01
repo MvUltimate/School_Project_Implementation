@@ -13,6 +13,7 @@ using WebApi_SchoolProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Drawing;
 using System.Transactions;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace WebApi_SchoolProject.Controllers
 {
@@ -58,6 +59,45 @@ namespace WebApi_SchoolProject.Controllers
         {
             public Guid UUID { get; set; }
             public string Password { get; set; }
+        }
+
+        [HttpPost("chargeClass")]
+        [Authorize(Policy = "RequireAdminDepartement")]
+        public async Task <ActionResult> ChargeClass([FromBody] ChargeClassRequest chargeClassRequest)
+        {
+
+            var uuid = User.FindFirst("UUID");
+            var senderuuid = new Guid(uuid.Value);
+
+            var studentClass = await _context.Classes.FirstOrDefaultAsync(c => c.Name == chargeClassRequest.Class);
+            if (studentClass == null)
+            {
+                return NotFound("This class doesn't exist");
+            }
+
+            var listOfStudents = await _context.SAPs
+            .Where(s => s.ClassId == studentClass.ClassId)
+            .Include(s => s.Class) // Inclure la classe associée
+            .ToListAsync();
+
+            foreach (var student in listOfStudents)
+            {
+                if (student.Class.Name == studentClass.Name)
+                {
+                    var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UUID == student.UUID);
+                    await _transactionManagerService.AddCredit(account, chargeClassRequest.Amount);
+                    await _transactionManagerService.WriteTransaction(account.UUID, senderuuid, chargeClassRequest.Amount);
+                }
+            }
+
+            return Ok("Transaction successfull");
+
+        }
+
+        public class ChargeClassRequest
+        {
+            public double Amount { get; set; }
+            public string Class { get; set; }
         }
 
         // GET: api/Accounts
@@ -126,8 +166,26 @@ namespace WebApi_SchoolProject.Controllers
             {
                 return NotFound("This account doesn't exist");
             }
-            _transactionManagerService.AddCredit(account, amount);
-            _transactionManagerService.WriteTransaction(account.UUID, senderuuid, amount);
+            await _transactionManagerService.AddCredit(account, amount);
+            await _transactionManagerService.WriteTransaction(account.UUID, senderuuid, amount);
+            return Ok("Transaction successful");
+
+        }
+
+        [HttpPost("chargeAll")]
+        [Authorize(Policy = "RequireAdminDepartement")]
+        public async Task<IActionResult> ChargeAll(double amount)
+        {
+            var uuid = User.FindFirst("UUID");
+            var senderuuid = new Guid(uuid.Value);
+            var listStudent = await _context.SAPs.Where(ls => ls.Departement.DepartementName == "Students").ToListAsync();
+            foreach (var student in listStudent)
+            {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UUID == student.UUID);
+                await _transactionManagerService.AddCredit(account, amount);
+                await _transactionManagerService.WriteTransaction(account.UUID, senderuuid, amount);
+            }
+          
             return Ok("Transaction successful");
 
         }
