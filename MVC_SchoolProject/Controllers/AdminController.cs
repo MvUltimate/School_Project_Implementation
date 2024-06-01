@@ -6,6 +6,7 @@ using MVC_SchoolProject.Services;
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using static WebApi_SchoolProject.Controllers.AdminAccountsController;
 
 namespace MVC_SchoolProject.Controllers
 {
@@ -65,8 +66,37 @@ namespace MVC_SchoolProject.Controllers
 
             return RedirectToAction("AdminView");
         }
+
+
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+            return View("CreateUser");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(AdminModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var success = await _adminService.CreateUser(model);
+                if (success)
+                {
+                    TempData["Message"] = "Utilisateur créé avec succès !";
+                    return RedirectToAction("AdminView");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Échec de la création de l'utilisateur.";
+                }
+            }
+            return View(model);
+        }
+        
+
+
     }
 
-    
+
 
 }

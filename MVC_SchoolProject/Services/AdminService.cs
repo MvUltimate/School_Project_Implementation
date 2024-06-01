@@ -45,7 +45,7 @@ namespace MVC_SchoolProject.Services
             
         }
 
-        public async Task<bool> CreateUser(TransactionModel model)
+        public async Task<bool> CreateUser(AdminModel model)
         {
             var response = await _httpClient.PostAsJsonAsync(_baseUrl + "/createaccount", model);
             return response.IsSuccessStatusCode;
