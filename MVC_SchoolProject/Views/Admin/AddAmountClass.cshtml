@@ -1,4 +1,4 @@
-﻿@model MVC_SchoolProject.Models.AdminModel
+﻿@model MVC_SchoolProject.Models.ChargeClassModel
 
 @{
     ViewData["Title"] = "Charge Class";
@@ -6,27 +6,49 @@
 
 <h2>@ViewData["Title"]</h2>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">@TempData["Message"]</div>
-}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-success">@TempData["Message"]</div>
+            }
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
 
-<form asp-action="ChargeClass" method="post">
-    <div class="form-group">
-        <label asp-for="Class">Class Name</label>
-        <input asp-for="Class" class="form-control" />
-        <span asp-validation-for="Class" class="text-danger"></span>
+            <form asp-controller="Admin" asp-action="AddAmountClass" method="post">
+                <div class="form-group">
+                    <label asp-for="className">Class</label>
+                    <input type="text" class="form-control" id="className" name="className" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Amount">Amount</label>
+                    <input type="number" class="form-control" id="Amount" name="Amount" step="0.01" />
+                </div>
+                <button type="submit" class="btn btn-primary">Add Amount</button>
+                <a href="@Url.Action("AdminView", "Admin")" class="btn btn-primary">Back</a>
+            </form>
+
+            <div>
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Amount">Amount</label>
-        <input asp-for="Amount" type="number" class="form-control" />
-        <span asp-validation-for="Amount" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Charge Class</button>
-    <a href="@Url.Action("AdminView", "Admin")" class="btn btn-primary">Back</a>
-</form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+

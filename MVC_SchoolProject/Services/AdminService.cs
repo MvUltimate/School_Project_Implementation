@@ -46,9 +46,20 @@ namespace MVC_SchoolProject.Services
             
         }
 
-        public async Task<bool> CreateUser(AdminModel model)
+        public async Task<bool> CreateUser(Guid Uuid, string password)
         {
-            var response = await _httpClient.PostAsJsonAsync(_baseUrl + "/createaccount", model);
+            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            if (token != null)
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var content = JsonContent.Create(new {Uuid, password });
+            var response = await _httpClient.PostAsync(_baseUrl + "/createaccount", content);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Response Status: {response.StatusCode}, Body: {responseBody}");
+
             return response.IsSuccessStatusCode;
         }
 
@@ -60,7 +71,6 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
             var content = JsonContent.Create(new { username, amount });
-            //var content = new StringContent(JsonSerializer.Serialize(new { UserName = username, Amount = amount }), System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"{_baseUrl}/chargeamount", content);
 
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -69,7 +79,7 @@ namespace MVC_SchoolProject.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> AddAmountClass(string Class, double amount)
+        public async Task<bool> AddAmountClass(string className, double amount)
         {
             var token = _httpContextAccessor.HttpContext.Session.GetString("token");
             if (token != null)
@@ -77,8 +87,11 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var chargeRequest = new { Class = Class, Amount = amount };
-            var response = await _httpClient.PostAsJsonAsync(_baseUrl + "/chargeclass", chargeRequest);
+            var content = JsonContent.Create(new { amount, className  });
+            var response = await _httpClient.PostAsync($"{_baseUrl}/chargeClass", content);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Response Status: {response.StatusCode}, Body: {responseBody}");
 
             return response.IsSuccessStatusCode;
         }
@@ -91,8 +104,8 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var chargeRequest = new { Amount = amount };
-            var response = await _httpClient.PostAsJsonAsync(_baseUrl + "/chargeAll", chargeRequest);
+            var content = JsonContent.Create(new { amount });
+            var response = await _httpClient.PostAsync(_baseUrl + "/chargeAll", content);
 
             return response.IsSuccessStatusCode;
         }

@@ -1,26 +1,38 @@
 ﻿@model double
-
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Charge All Users";
 }
 
-<h2>@ViewData["Title"]</h2>
-
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">@TempData["Message"]</div>
-}
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-
-<form asp-action="ChargeAll" method="post">
-    <div class="form-group">
-        <label asp-for="Amount">Amount</label>
-        <input asp-for="Amount" class="form-control" />
-        <span asp-validation-for="Amount" class="text-danger"></span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Charge Amount</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Admin" asp-action="AddAmountAll" method="post">
+                        <div class="form-group">
+                            <label for="amount">Amount:</label>
+                            <input type="number" class="form-control" id="amount" name="amount" step="0.01" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="@Url.Action("AdminView", "Admin")" class="btn btn-primary">Back</a>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Charge All Users</button>
-</form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<link rel="stylesheet" href="https://stackpath.amazonaws.com/bootstrap/4.5.2/css/bootstrap.min.css">

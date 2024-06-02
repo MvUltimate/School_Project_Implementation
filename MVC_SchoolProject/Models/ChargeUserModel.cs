@@ -1,6 +1,6 @@
 ﻿namespace MVC_SchoolProject.Models
 {
-    public class ChargeModel
+    public class ChargeUserModel
     {
 
        public  string Username { get; set; }

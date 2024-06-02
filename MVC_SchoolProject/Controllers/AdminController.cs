@@ -46,7 +46,7 @@ namespace MVC_SchoolProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAmountUser(ChargeModel model)
+        public async Task<IActionResult> AddAmountUser(ChargeUserModel model)
         {
             if (ModelState.IsValid)
             {
@@ -72,11 +72,11 @@ namespace MVC_SchoolProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAmountClass(AdminModel model)
+        public async Task<IActionResult> AddAmountClass(ChargeClassModel model)
         {
             if (ModelState.IsValid)
             {
-                var success = await _adminService.AddAmountClass(model.Class, model.Amount);
+                var success = await _adminService.AddAmountClass(model.className, model.amount);
                 if (success)
                 {
                     TempData["Message"] = "Amount successfully added!";
@@ -85,29 +85,32 @@ namespace MVC_SchoolProject.Controllers
                 {
                     TempData["ErrorMessage"] = "Failed to add amount.";
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("AdminView");
             }
             TempData["ErrorMessage"] = "Input data is not valid.";
-            return View(model);
+            return View("AddAmountClass", model);
         }
 
         [HttpGet]
-        public IActionResult AddAmountAll()
+        public async Task<IActionResult> AddAmountAll()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult>AmountAll(AdminModel model)
+        public async Task<IActionResult>AddAmountAll(double amount)
         {
-            if (ModelState.IsValid)
+            var result = await _adminService.AddAmountAll(amount);
+            if (result)
             {
-                if (await _adminService.AddAmountAll(model.Amount))
-                    TempData["Message"] = "All accounts charged successfully!";
-                else
-                    TempData["ErrorMessage"] = "Failed to charge all accounts.";
+                TempData["Message"] = "All accounts charged successfully!";
+                return RedirectToAction("AdminView");
             }
-            return View("AdminView");
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to charge all accounts.";
+                return View();
+            }           
         }
 
 
@@ -118,11 +121,11 @@ namespace MVC_SchoolProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(AdminModel model)
+        public async Task<IActionResult> CreateUser(CreateUserModel model)
         {
             if (ModelState.IsValid)
             {
-                var success = await _adminService.CreateUser(model);
+                var success = await _adminService.CreateUser(model.Uuid, model.password);
                 if (success)
                 {
                     TempData["Message"] = "Utilisateur créé avec succès !";
