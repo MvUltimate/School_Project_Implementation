@@ -17,7 +17,7 @@ namespace WebApi_SchoolProject.Services
         
         public string Authenticate(string username, string password)
         {
-            //Grab the secret key in the JSON File, it's possible that it has a better method
+            //Grab the secret key in the JSON File
             var configurationBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.secrets.json", optional: true, reloadOnChange: true)

@@ -13,24 +13,25 @@ namespace WebApi_SchoolProject.Services
         {
             using var context = new SchoolContext();
 
+            //If the User doesn't exist in SAP, it's not possible to create his Account
             var existingUser = context.SAPs.FirstOrDefault(a => a.UUID == uuid);
             if (existingUser == null)
             {
                 throw new InvalidOperationException("L'utilisateur avec cet UUID n'existe pas.");
             }
            
-            //Générer un sel aléatoire
+            //Generate a random salt
             string salt = BCrypt.Net.BCrypt.GenerateSalt();
 
-            // Hacher le mot de passe avec le sel
+            // Hash the password with the salt
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
 
-            // Enregistrer l'utilisateur avec le mot de passe haché
+            // Register the new Account of the user
             Account newUser = new Account
             {
                 UUID = uuid,
                 password = hashedPassword,
-                salt = salt // Vous pouvez également stocker le sel dans votre base de données
+                salt = salt 
             };
 
             context.Add(newUser);
