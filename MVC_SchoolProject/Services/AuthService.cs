@@ -46,7 +46,12 @@ namespace MVC_SchoolProject.Services
                         ErrorMessage = "Username or password incorrect !"
                     };
                 }
-            }    
+            }
+            return new LoginResult
+            {
+                Success = false,
+                ErrorMessage = "An error occured "
+            };
 
         }
         }
