@@ -59,8 +59,8 @@ namespace MVC_SchoolProject.Services
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
-
-            var content = new StringContent(JsonSerializer.Serialize(new { UserName = username, Amount = amount }), System.Text.Encoding.UTF8, "application/json");
+            var content = JsonContent.Create(new { username, amount });
+            //var content = new StringContent(JsonSerializer.Serialize(new { UserName = username, Amount = amount }), System.Text.Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"{_baseUrl}/chargeamount", content);
 
             var responseBody = await response.Content.ReadAsStringAsync();

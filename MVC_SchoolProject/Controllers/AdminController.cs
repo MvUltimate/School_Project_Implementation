@@ -46,11 +46,11 @@ namespace MVC_SchoolProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAmountUser(AdminModel model)
+        public async Task<IActionResult> AddAmountUser(ChargeModel model)
         {
             if (ModelState.IsValid)
             {
-                var success = await _adminService.AddAmountUser(model.UserName, model.Amount);
+                var success = await _adminService.AddAmountUser(model.Username, model.amount);
                 if (success)
                 {
                     TempData["Message"] = "Amount successfully added!";

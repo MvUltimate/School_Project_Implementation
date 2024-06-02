@@ -7,6 +7,7 @@ using DAL;
 using WebApi_SchoolProject.Services;
 using WebApi_SchoolProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using static WebApi_SchoolProject.Controllers.StudentsAccountController;
 
 
 namespace WebApi_SchoolProject.Controllers
@@ -167,8 +168,10 @@ namespace WebApi_SchoolProject.Controllers
         // charge amount of a specific user by his username
         [HttpPost("chargeamount")]
         [Authorize(Policy = "RequireAdminDepartement")]
-        public async Task<IActionResult> ChargeAccount(string username, double amount)
+        public async Task<IActionResult> ChargeUserAccount([FromBody] ChargeUserRequest chargequest)
         {
+            var username = chargequest.username;
+            var amount = chargequest.amount;
             var account = await _studentService.GetAccountFromUsername(username);
             if (account == null)
             {
@@ -183,6 +186,13 @@ namespace WebApi_SchoolProject.Controllers
             return Ok("Transaction successful");
 
         }
+
+        public class ChargeUserRequest()
+        {
+            public string username { get; set; }
+            public double amount { get; set; }
+        }
+
 
         // ...api/adminaccounts/chargeall
         // charge the account of all students
