@@ -1,4 +1,5 @@
 ﻿// AdminService.cs
+using System;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
@@ -51,7 +52,7 @@ namespace MVC_SchoolProject.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> ChargeAmount(string username, double amount)
+        public async Task<bool> AddAmountUser(string username, double amount)
         {
             var token = _httpContextAccessor.HttpContext.Session.GetString("token");
             if (token != null)
@@ -59,8 +60,39 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var chargeRequest = new { Username = username, Amount = amount };
-            var response = await _httpClient.PostAsJsonAsync(_baseUrl + "/chargeaccount", chargeRequest);
+            var content = new StringContent(JsonSerializer.Serialize(new { UserName = username, Amount = amount }), System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"{_baseUrl}/chargeamount", content);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Response Status: {response.StatusCode}, Body: {responseBody}");
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> AddAmountClass(string Class, double amount)
+        {
+            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            if (token != null)
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var chargeRequest = new { Class = Class, Amount = amount };
+            var response = await _httpClient.PostAsJsonAsync(_baseUrl + "/chargeclass", chargeRequest);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> AddAmountAll(double amount)
+        {
+            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            if (token != null)
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var chargeRequest = new { Amount = amount };
+            var response = await _httpClient.PostAsJsonAsync(_baseUrl + "/chargeAll", chargeRequest);
 
             return response.IsSuccessStatusCode;
         }

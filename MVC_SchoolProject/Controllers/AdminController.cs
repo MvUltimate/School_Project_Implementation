@@ -39,32 +39,75 @@ namespace MVC_SchoolProject.Controllers
             return View(transactions); // Renvoyer vers une vue qui affichera les transactions
         }
 
-        public async Task<bool> ChargeAmount(string username, double amount)
+        [HttpGet]
+        public IActionResult AddAmountUser()
         {
-            return await _adminService.ChargeAmount(username, amount);
+            return View();
         }
 
-        
+        [HttpPost]
+        public async Task<IActionResult> AddAmountUser(AdminModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var success = await _adminService.AddAmountUser(model.UserName, model.Amount);
+                if (success)
+                {
+                    TempData["Message"] = "Amount successfully added!";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to add amount.";
+                }
+                return RedirectToAction("AdminView");
+            }
+            TempData["ErrorMessage"] = "Input data is not valid.";
+            return View("AddAmountUser", model);
+        }
+
+        [HttpGet]
+        public IActionResult AddAmountClass()
+        {
+            return View();
+        }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessSelectedUsers(List<Guid> usernames, string selectedAction)
+        public async Task<IActionResult> AddAmountClass(AdminModel model)
         {
-            switch (selectedAction)
+            if (ModelState.IsValid)
             {
-                case "chargeAmount":
-                    foreach (var username in usernames)
-                    {
-                        //ChargeAmount(username, amount);
-                    }
-                    break;
-                case "otherAction":
-                    // Logique pour une autre action
-                    break;
+                var success = await _adminService.AddAmountClass(model.Class, model.Amount);
+                if (success)
+                {
+                    TempData["Message"] = "Amount successfully added!";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to add amount.";
+                }
+                return RedirectToAction("Index");
             }
+            TempData["ErrorMessage"] = "Input data is not valid.";
+            return View(model);
+        }
 
-            
+        [HttpGet]
+        public IActionResult AddAmountAll()
+        {
+            return View();
+        }
 
-            return RedirectToAction("AdminView");
+        [HttpPost]
+        public async Task<IActionResult>AmountAll(AdminModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await _adminService.AddAmountAll(model.Amount))
+                    TempData["Message"] = "All accounts charged successfully!";
+                else
+                    TempData["ErrorMessage"] = "Failed to charge all accounts.";
+            }
+            return View("AdminView");
         }
 
 

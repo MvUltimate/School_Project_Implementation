@@ -18,7 +18,7 @@ namespace MVC_SchoolProject
             builder.Services.AddHttpContextAccessor();
             // Register services
 
-            builder.Services.AddHttpClient<AuthService, AuthService>();
+            builder.Services.AddHttpClient<IAuthService, AuthService>();
             // Add scoped services for AuthService and StudentService
             // Scoped lifetime means services are created once per request within the scope
 
@@ -55,8 +55,8 @@ namespace MVC_SchoolProject
             //app.MapRazorPages();
             // Set the default route to /login/login
             app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Login}/{action=Login}/{id?}");
+                name: "default",
+                pattern: "{controller=Login}/{action=Login}/{id?}");
 
             app.Run();
         }

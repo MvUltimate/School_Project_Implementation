@@ -1,0 +1,32 @@
+﻿@model MVC_SchoolProject.Models.AdminModel
+
+@{
+    ViewData["Title"] = "Charge Class";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="ChargeClass" method="post">
+    <div class="form-group">
+        <label asp-for="Class">Class Name</label>
+        <input asp-for="Class" class="form-control" />
+        <span asp-validation-for="Class" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount">Amount</label>
+        <input asp-for="Amount" type="number" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Charge Class</button>
+    <a href="@Url.Action("AdminView", "Admin")" class="btn btn-primary">Back</a>
+</form>
