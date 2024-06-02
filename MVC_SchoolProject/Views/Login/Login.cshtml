@@ -32,10 +32,10 @@
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Login</button>
                         </form>
-                        @if (!String.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+                        @if (!String.IsNullOrEmpty(ViewBag.ErrorMessage))
                         {
                             <div class="alert alert-danger mt-3">
-                                @ViewData["ErrorMessage"]
+                                @ViewBag.ErrorMessage
                             </div>
                         }
                     </div>

@@ -1,9 +1,12 @@
 ﻿
+using Microsoft.AspNetCore.Identity.Data;
+using MVC_SchoolProject.Models;
+
 namespace MVC_SchoolProject.Services
 {
     public interface IAuthService
     {
-        void AddTokenToHeader(string token);
-        Task<string> LoginAsync(string username, string password);
+        
+        Task<LoginResult> LoginAsync(string username, string password);
     }
 }

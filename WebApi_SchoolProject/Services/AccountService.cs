@@ -17,7 +17,7 @@ namespace WebApi_SchoolProject.Services
             var existingUser = context.SAPs.FirstOrDefault(a => a.UUID == uuid);
             if (existingUser == null)
             {
-                throw new InvalidOperationException("L'utilisateur avec cet UUID n'existe pas.");
+                throw new InvalidOperationException("The user with this UUID doesn't exist.");
             }
            
             //Generate a random salt

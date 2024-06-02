@@ -12,8 +12,7 @@ namespace MVC_SchoolProject.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-
-        public StudentService(HttpClient httpClient, AuthService authService, IHttpContextAccessor httpContextAccessor)
+        public StudentService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
@@ -22,14 +21,15 @@ namespace MVC_SchoolProject.Services
         public async Task<bool> chargeAmount(double amount)
         {
             var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            //Add the token to verify the authorization
             if (token != null)
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
-            // Créer le contenu de la requête avec le montant sous forme JSON
+            // Create the content of the request with a JSON format
             var content = JsonContent.Create(new { amount });
 
-            // Envoyer la requête HTTP POST à l'API
+            // send the request 
             var response = await _httpClient.PostAsync(_baseUrl + "/chargeaccount", content);
 
             return response.IsSuccessStatusCode; // Returns true if the request was successful, false otherwise
@@ -39,6 +39,7 @@ namespace MVC_SchoolProject.Services
         public async Task<StudentsInfoM> checkInfo()
         {
             var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            //Add the token to verify the authorization
             if (token != null)
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

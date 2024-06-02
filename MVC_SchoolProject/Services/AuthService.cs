@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using MVC_SchoolProject.Models;
+using NuGet.Common;
+using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -8,16 +10,16 @@ namespace MVC_SchoolProject.Services
     {
 
         private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _baseUrl = "https://localhost:7252/api/login/authenticate";
 
-        public AuthService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public AuthService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<string> LoginAsync(string username, string password)
+ 
+        //To return to the view a good error message
+        public async Task<LoginResult> LoginAsync(string username, string password)
         {
             var loginModel = new { username, password };// Login model containing username and password
             // Sends a POST request to the API to authenticate user
@@ -25,29 +27,28 @@ namespace MVC_SchoolProject.Services
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                var tokenObject = JsonSerializer.Deserialize<JsonElement>(jsonResponse);
-                if (tokenObject.TryGetProperty("token", out var tokenValue))
+                var result = JsonSerializer.Deserialize<JsonElement>(jsonResponse);
+                //If the answer contains success == true, retrieve the token and transfer
+                if (result.TryGetProperty("success", out var successElement) && successElement.GetBoolean())
                 {
-                    // Retrieves the token value
-                    var token = tokenValue.GetString();
-                    //AddTokenToHeader(token); // Adds the token to HTTP request header for future request
-                    return token;
+                    result.TryGetProperty("token", out var tokenElement);
+                    return new LoginResult
+                    {
+                        Success = true,
+                        Token = tokenElement.GetString()
+                    };
                 }
-            }
-            return null;
+                else
+                {
+                    return new LoginResult
+                    {
+                        Success = false,
+                        ErrorMessage = "Username or password incorrect !"
+                    };
+                }
+            }    
 
         }
-
-        // Method to add token to HTTP request header for authentication
-        public void AddTokenToHeader(string token)
-        {
-            if (!string.IsNullOrEmpty(token))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
         }
 
-
-
-    }
 }

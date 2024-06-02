@@ -6,7 +6,7 @@ namespace WebApi_SchoolProject.Models
     {
 
         public int TransactionId { get; set; }
-        public string Receiver { get; set; } // Compte sur lequel est effectuée la transaction
+        public string Receiver { get; set; } 
 
         public string Sender { get; set; }
         public string Date { get; set; }

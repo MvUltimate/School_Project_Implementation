@@ -1,5 +1,4 @@
-﻿using DAL;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebApi_SchoolProject.Services;
 
@@ -20,15 +19,26 @@ using WebApi_SchoolProject.Services;
 
         }
 
+        
         [HttpPost("authenticate")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
             var token  = _authService.Authenticate(request.username, request.password);
 
-            if(token == null)
-                return Unauthorized(new { message = "Username or password is incorrect" });
+            //Used to the MVC, if we don't return OK, the View will crash
+            //return ok but will be blocked later
+            if (token == null)
+                return Ok(new
+                {
+                    success = false,
+                   
+                });
 
-            return Ok(new {token});
+            return Ok(new
+            {
+                success = true,
+                token
+            });
 
         }
 

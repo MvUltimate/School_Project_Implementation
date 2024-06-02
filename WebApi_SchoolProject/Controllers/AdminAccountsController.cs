@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DAL;
-using DAL.Models;
 using WebApi_SchoolProject.Services;
 using WebApi_SchoolProject.Models;
-
 using Microsoft.AspNetCore.Authorization;
-using System.Drawing;
-using System.Transactions;
-using Microsoft.AspNetCore.Mvc.Routing;
+
 
 namespace WebApi_SchoolProject.Controllers
 {
@@ -39,6 +33,8 @@ namespace WebApi_SchoolProject.Controllers
             _transactionManagerService = transactionManagerService;
         }
 
+        //...api/adminAccount/createaccount/uuid
+        // create an Account in the table Account based on a UUID in the table SAP 
         [HttpPost("createaccount {Uuid}")]
         [Authorize(Policy = "RequireAdminDepartement")]
         public IActionResult CreateUser([FromBody] CreateUserRequest request)
@@ -46,7 +42,7 @@ namespace WebApi_SchoolProject.Controllers
             try
             {
                 _accountService.CreateUser(request.UUID, request.Password);
-                return Ok("Utilisateur créé avec succès !");
+                return Ok("User created successfully ");
             }
             catch (InvalidOperationException ex)
             {
@@ -61,18 +57,21 @@ namespace WebApi_SchoolProject.Controllers
             public string Password { get; set; }
         }
 
+        //...api/adminaccount/chargeClass/601-PT
         [HttpPost("chargeClass")]
         [Authorize(Policy = "RequireAdminDepartement")]
         public async Task <ActionResult> ChargeClass([FromBody] ChargeClassRequest chargeClassRequest)
         {
-
+            //retrieve the UUID of the authentified user to store it in the transaction
             var uuid = User.FindFirst("UUID");
             var senderuuid = new Guid(uuid.Value);
 
+            //retrieve the class
+            //his ID is used to get the list of students
             var studentClass = await _context.Classes.FirstOrDefaultAsync(c => c.Name == chargeClassRequest.Class);
             if (studentClass == null)
             {
-                return NotFound("This class doesn't exist");
+                return NotFound($"Class with name {studentClass} not found.");
             }
 
             var listOfStudents = await _context.SAPs
@@ -80,17 +79,19 @@ namespace WebApi_SchoolProject.Controllers
             .Include(s => s.Class) // Inclure la classe associée
             .ToListAsync();
 
+            //Foreach student we retrieve his account and charge it with the amount and store a new transaction
             foreach (var student in listOfStudents)
             {
                 if (student.Class.Name == studentClass.Name)
                 {
-                    var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UUID == student.UUID);
+                    var account = await _studentService.GetAccountFromUsername(student.UserName);
+                    //var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UUID == student.UUID);
                     await _transactionManagerService.AddCredit(account, chargeClassRequest.Amount);
                     await _transactionManagerService.WriteTransaction(account.UUID, senderuuid, chargeClassRequest.Amount);
                 }
             }
 
-            return Ok("Transaction successfull");
+            return Ok("Transactions successfull");
 
         }
 
@@ -100,7 +101,8 @@ namespace WebApi_SchoolProject.Controllers
             public string Class { get; set; }
         }
 
-        // GET: api/Accounts
+        // GET: api/adminaccount
+        //return all the accounts
         [HttpGet]
         [Authorize(Policy = "RequireAdminDepartement")]
         public async Task<ActionResult<IEnumerable<StudentsInfoM>>> GetAccounts()
@@ -117,7 +119,8 @@ namespace WebApi_SchoolProject.Controllers
 
         }
 
-        // GET: api/Accounts/frank.miller
+        // GET: api/adminaccount/accountinfo/frank.miller
+        //return the information (StudentsInfoM) from a specific user
         [HttpGet("accountinfo")]
         [Authorize(Policy = "RequireAdminDepartement")]
         public async Task<ActionResult<StudentsInfoM>> GetAccount(string username)
@@ -126,22 +129,27 @@ namespace WebApi_SchoolProject.Controllers
 
             if (sapUser == null)
             {
-                // Retourner une réponse 404 si l'utilisateur n'est pas trouvé
                 return NotFound($"User with username {username} not found.");
             }
             StudentsInfoM studentInfo = await _studentService.GetUsersInfo(sapUser.UUID);
             return studentInfo;
         }
 
+
+        //...api/adminaccount/accountfromclass
+        // retrieve the user in function of a className
         [HttpGet("accountfromclass")]
         [Authorize(Policy = "RequireAdminDepartement")]
         public async Task<ActionResult<IEnumerable<StudentsInfoM>>> GetUserByClass(string className)
         {
-            var classEntity = await _context.Classes.FirstOrDefaultAsync(c => c.Name == className);
+
+            var studentClass = await _context.Classes.FirstOrDefaultAsync(c => c.Name == className);
+
             var listOfStudents = await _context.SAPs
-            .Where(s => s.ClassId == classEntity.ClassId)
-            .Include(s => s.Class) // Inclure la classe associée
+            .Where(s => s.ClassId == studentClass.ClassId)
+            .Include(s => s.Class) // Inclure studenClass
             .ToListAsync();
+
             List<StudentsInfoM> listStudentByClass = new List<StudentsInfoM>();
             foreach (var student in listOfStudents)
             {
@@ -155,30 +163,38 @@ namespace WebApi_SchoolProject.Controllers
 
         }
 
+        //...api/cadminaccount/chargeamount/frank.miller&10
+        // charge amount of a specific user by his username
         [HttpPost("chargeamount")]
         [Authorize(Policy = "RequireAdminDepartement")]
         public async Task<IActionResult> ChargeAccount(string username, double amount)
         {
             var account = await _studentService.GetAccountFromUsername(username);
-            var uuid = User.FindFirst("UUID");
-            var senderuuid = new Guid(uuid.Value);
             if (account == null)
             {
-                return NotFound("This account doesn't exist");
+                return NotFound($"User with username {username} not found.");
             }
+
+            var uuid = User.FindFirst("UUID");
+            var senderuuid = new Guid(uuid.Value);
+
             await _transactionManagerService.AddCredit(account, amount);
             await _transactionManagerService.WriteTransaction(account.UUID, senderuuid, amount);
             return Ok("Transaction successful");
 
         }
 
+        // ...api/adminaccounts/chargeall
+        // charge the account of all students
         [HttpPost("chargeAll")]
         [Authorize(Policy = "RequireAdminDepartement")]
         public async Task<IActionResult> ChargeAll(double amount)
         {
             var uuid = User.FindFirst("UUID");
             var senderuuid = new Guid(uuid.Value);
+
             var listStudent = await _context.SAPs.Where(ls => ls.Departement.DepartementName == "Students").ToListAsync();
+
             foreach (var student in listStudent)
             {
                 var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UUID == student.UUID);
@@ -189,22 +205,16 @@ namespace WebApi_SchoolProject.Controllers
             return Ok("Transaction successful");
 
         }
-
+        //return the transaction for a specifique user
         [HttpGet("getUserTransaction")]
         [Authorize(Policy = "RequireAdminDepartement")]
         public async Task<ActionResult<IEnumerable<TransactionM>>> GetTransaction(string username)
         {
             var account = await _studentService.GetAccountFromUsername(username);
+
             var transactions = await _studentService.GetTransactions(account.UUID);
+
             return Ok(transactions);
-
-            {
-
-
-
-
-
-            }
         }
     }
 }

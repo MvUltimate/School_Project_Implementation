@@ -8,7 +8,7 @@ using WebApi_SchoolProject.Models;
 
 namespace WebApi_SchoolProject.Services
 {
-    //Class who return informations from differents tables to have all the informations in one view
+    //Service to carry out differents informations of a student
     public class StudentService
     {
         private readonly SchoolContext _context;
@@ -20,38 +20,38 @@ namespace WebApi_SchoolProject.Services
             _transactionManagerService = transactionManagerService;
         }
 
-        //Return the account in function of the username
+        //Return the Account in function of the username in the SAPS Account
         // Will be used to compare the informations in the token
-        //Used in StudentController TO Charge Amount
+        //Used in StudentController
         public async Task<Account> GetAccountFromUsername(string username)
         {
-            using var context = new SchoolContext();
+           
             var user = await _context.SAPs.FirstOrDefaultAsync(u => u.UserName == username);
             if(user == null)
             {
                 return null;
             }
-
+            //Compare the UUID (Unique identifier) of the user with the UUID of all Account 
             var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UUID == user.UUID);
             return account;
 
         }
 
-        //Mapper la classe studentInfo
-        //Used to return all the informations of a student or the list of student for the Admin
+        //Mapp the Model (studentInfoM)
+        //Used to return all the informations that the student need 
         public async Task<StudentsInfoM> GetUsersInfo(Guid uuid)
         {
 
-            // Récupérer les informations de l'utilisateur (SAP)
+            // Retrieve informations of the user (SAP)
             var sapUser = await _context.SAPs
-                .Include(s => s.Class) // Inclure la classe associée
+                .Include(s => s.Class) // Include the studentClass
                 .FirstOrDefaultAsync(u => u.UUID == uuid);
 
-            // Récupérer le compte de l'utilisateur
+            // Retrieve the user Account 
             var userAccount = await _context.Accounts
                 .FirstOrDefaultAsync(a => a.UUID == sapUser.UUID);
 
-            // Mapper les informations dans le DTO StudentInfo
+            // Mapp the informations to the StudentsInfoM
             var userInfo = new StudentsInfoM
             {
                 Uuid = sapUser.UUID,
@@ -65,6 +65,9 @@ namespace WebApi_SchoolProject.Services
             return userInfo;
         }
 
+        //Get the list of transaction from a unique identifier (UUID)
+        //Is used with the UUID because it will be called uniquely by the student authentified and
+        //the UUID is stored in the Bearer token
         public async Task<List<TransactionM>> GetTransactions(Guid uuid)
         {
             var transactions = await _context.Transactions.Where(t => t.Receiver == uuid).ToListAsync();

@@ -1,5 +1,7 @@
 ﻿namespace WebApi_SchoolProject.Models
 {
+
+    //Combinaison of informations from SAP table and Account table
     public class StudentsInfoM
     {
 

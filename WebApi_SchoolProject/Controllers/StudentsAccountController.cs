@@ -16,13 +16,11 @@ namespace WebApi_SchoolProject.Controllers
     {
 
         private readonly StudentService _studentService;
-        private readonly SchoolContext  _schoolContext;
         private readonly TransactionManagerService _transactionManagerService;
 
-        public StudentsAccountController(StudentService studentService, SchoolContext schoolContext, TransactionManagerService transactionManagerService)
+        public StudentsAccountController(StudentService studentService, TransactionManagerService transactionManagerService)
         {
             _studentService = studentService;
-            _schoolContext = schoolContext;
             _transactionManagerService = transactionManagerService;
         }
 
@@ -42,6 +40,7 @@ namespace WebApi_SchoolProject.Controllers
             return Ok(userInfo);
         }
 
+        //Charge the account of the student connected
         [HttpPost("chargeAccount")]
         public async Task<IActionResult> ChargeAccount([FromBody]ChargeRequest chargequest)
         {
@@ -62,6 +61,7 @@ namespace WebApi_SchoolProject.Controllers
             public double amount { get; set; }
         } 
 
+        //Get the transactions of the student connected 
         [HttpGet("transactions")]
         public async Task<ActionResult<IEnumerable<TransactionM>>> GetTransactions()
         {

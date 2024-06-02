@@ -5,6 +5,7 @@ using WebApi_SchoolProject.Models;
 
 namespace WebApi_SchoolProject.Services
 {
+    //Service to manage the different transactions
     public class TransactionManagerService
     {
 
@@ -19,6 +20,7 @@ namespace WebApi_SchoolProject.Services
             return (int)(amount / 0.05);
         }
 
+       
         public async Task AddCredit(Account account , double amount)
         {
             account.Amount += amount;
@@ -26,9 +28,10 @@ namespace WebApi_SchoolProject.Services
             await _schoolContext.SaveChangesAsync();
         }
 
+       
         public async Task  WriteTransaction(Guid accountCredited, Guid accountSender, double amount)
         {
-            //Possible to do it with the table Account but we need to do one more link
+            
             var credited = await _schoolContext.Accounts.FirstOrDefaultAsync(c => c.UUID == accountCredited);
             var sender = await _schoolContext.Accounts.FirstOrDefaultAsync(s => s.UUID == accountSender);
             var transaction = new Transaction

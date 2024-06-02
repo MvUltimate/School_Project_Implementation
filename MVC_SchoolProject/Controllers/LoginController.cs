@@ -10,13 +10,11 @@ namespace MVC_SchoolProject.Controllers
 
         private readonly AuthService _authService;
         private readonly StudentService _studentService;
-        private readonly HttpClient _httpClient;
 
-        public LoginController(AuthService authService, StudentService studentService, HttpClient httpClient)
+        public LoginController(AuthService authService, StudentService studentService)
         {
             _authService = authService;
             _studentService = studentService;
-            _httpClient = httpClient;
         }
 
         //Login page
@@ -29,12 +27,13 @@ namespace MVC_SchoolProject.Controllers
         public async Task<IActionResult> Login(LoginModel loginModel)
         {       
                 //Verify that the login is successful and the token is not null
-                var token = await _authService.LoginAsync(loginModel.Username, loginModel.Password);
-                if (token != null)
-                {
-                    HttpContext.Session.SetString("token", token);
+                
+            var loginResult = await _authService.LoginAsync(loginModel.Username, loginModel.Password);
+
+            if (loginResult.Success)
+            {
+                HttpContext.Session.SetString("token", loginResult.Token);
                 var userInfo = await _studentService.checkInfo();
-                // Redirect to the student info page
 
                 if (userInfo.DepartmentId == 1)
                 {
@@ -44,11 +43,9 @@ namespace MVC_SchoolProject.Controllers
                 {
                     return RedirectToAction("AdminView", "Admin");
                 }
-
-
-
             }
-                ModelState.AddModelError("", "Invalid username or password.");
+            // Stocker le message d'erreur dans ViewBag
+            ViewBag.ErrorMessage = loginResult.ErrorMessage;
 
             return View(loginModel);
         }

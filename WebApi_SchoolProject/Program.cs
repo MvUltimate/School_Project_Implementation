@@ -14,7 +14,7 @@ namespace WebApi_SchoolProject
     {
         public static void Main(string[] args)
         {
-            //Grab the secret key in the JSON File, it's possible that it has a better method
+            //Retrieve the secret key in the JSON File
             var configurationBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.secrets.json", optional: true, reloadOnChange: true)
@@ -46,7 +46,7 @@ namespace WebApi_SchoolProject
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdminDepartement", policy => policy.RequireClaim("Departement","Admin"));
-                options.AddPolicy("RequireStudentDepartement", policy => policy.RequireClaim("Departement", "Student"));
+                options.AddPolicy("RequireStudentDepartement", policy => policy.RequireClaim("Departement", "Students"));
             });
 
 
@@ -58,6 +58,7 @@ namespace WebApi_SchoolProject
                     providerOptions => providerOptions.EnableRetryOnFailure());
             }
             );
+
             // Add scoped services : AuthService and AccountService.
             // need to be here to be used in the constructor of each Controller.
             builder.Services.AddScoped<AuthService>();

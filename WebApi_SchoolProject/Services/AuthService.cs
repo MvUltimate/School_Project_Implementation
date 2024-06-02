@@ -28,7 +28,7 @@ namespace WebApi_SchoolProject.Services
             //If the user doesn't prompt good credentials, reject
             if (username == null || password == null || login(username, password)==false)
             {
-                return "Informations incorrect";
+                return null;
             }
             //If the user doesn't exist, reject
             var user = getUserSAP(username);
@@ -36,7 +36,7 @@ namespace WebApi_SchoolProject.Services
             {
                 return null;
             }
-            //The departement to know the type of token that you will give (token with privilege or not)
+            //The departement to know the type of token that you will have (token with privilege or not)
             var departementName = user.Departement.DepartementName;
 
             //create the token gestionnaire
@@ -46,7 +46,7 @@ namespace WebApi_SchoolProject.Services
             //Description of the token
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                //Will be used to determine the right of the user on different request
+                //Will be used to determine the right of the user on different requests
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                 new Claim(ClaimTypes.Name, user.UserName),
@@ -66,7 +66,7 @@ namespace WebApi_SchoolProject.Services
     
 
 
-
+        //Method to retrieve the user by his name
         private SAP getUserSAP(string username)
         {
             using var context = new SchoolContext();
@@ -84,6 +84,7 @@ namespace WebApi_SchoolProject.Services
             if(user != null)
             {
                 var account = context.Accounts.FirstOrDefault(a => a.UUID == user.UUID);
+                //Bcrypt is used to verify the password
                 return BCrypt.Net.BCrypt.Verify(password, account.password);
             }
             return false;
