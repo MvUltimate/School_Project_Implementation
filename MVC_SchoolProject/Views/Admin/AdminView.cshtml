@@ -3,6 +3,17 @@
     ViewData["Title"] = "Admin Users";
 }
 
+@{
+    var message = TempData["Message"] as string;
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-success">
+        @message
+    </div>
+}
+
 <h2 class="text-center mt-4">@ViewData["Title"]</h2>
 
 <div class="container mt-3">
@@ -15,21 +26,18 @@
                     <table class="table table-bordered table-striped" id="myDataTable">
                         <thead>
                             <tr>
-                                <th><input type="checkbox" id="checkAll" /></th>
                                 <th>UUID</th>
                                 <th>Username</th>
                                 <th>Amount</th>
                                 <th>Number of Pages</th>
                                 <th>Class</th>
                                 <th>Department</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var user in Model)
                             {
                                 <tr>
-                                    <td><input type="checkbox" name="selectedUsers" value="@user.Uuid" /></td>
                                     <td>@user.Uuid</td>
                                     <td>@user.UserName</td>
                                     <td>@Html.DisplayFor(modelItem => user.Amount, "{0:C}")</td>
@@ -39,19 +47,20 @@
                                     <td>
                                         <a href="@Url.Action("ViewTransactions", "Admin", new { username = @user.UserName })" class="btn btn-info">View Transactions</a>
                                     </td>
-
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
                 <div class="card-footer text-center">
-                    <a href="@Url.Action("CreateUser", "Admin")" class="btn btn-primary">Add New User</a>
-                    <a href="@Url.Action("AddAmountUser", "Admin")" class="btn btn-secondary">Add amount to an user</a>
-                    <a href="@Url.Action("AddAmountClass", "Admin")" class="btn btn-secondary">Add amount by class</a>
-                    <a href="@Url.Action("AddAmountAll", "Admin")" class="btn btn-secondary">Add amount to all</a>
-                    <a href="@Url.Action("", "")" class="btn btn-secondary">Back to Home</a>
+                    <a href="@Url.Action("CreateUser", "Admin")" class="btn btn-primary mr-2 mb-2">Add New User</a>
+                    <a href="@Url.Action("AddAmountUser", "Admin")" class="btn btn-primary mr-2 mb-2">Add amount to an user</a>
+                    <a href="@Url.Action("AddAmountClass", "Admin")" class="btn btn-primary mr-2 mb-2">Add amount by class</a>
+                    <a href="@Url.Action("AddAmountAll", "Admin")" class="btn btn-primary mb-2">Add amount to all</a>
+                    <br />
+                    <a href="@Url.Action("", "")" class="btn btn-secondary mt-2">Back to Home</a>
                 </div>
+
             </div>
         </div>
     </div>
@@ -66,11 +75,6 @@
             $("#myDataTable tbody tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
-        });
-
-        // Checkbox "Select All" functionality
-        $("#checkAll").click(function () {
-            $('input[name="selectedUsers"]').prop('checked', this.checked);
         });
     });
 </script>

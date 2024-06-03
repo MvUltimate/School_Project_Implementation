@@ -54,12 +54,14 @@ namespace MVC_SchoolProject.Controllers
                 if (success)
                 {
                     TempData["Message"] = "Amount successfully added!";
+                    return RedirectToAction("AdminView");
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Failed to add amount.";
+                    return View("AddAmountUser", model);
                 }
-                return RedirectToAction("AdminView");
+                
             }
             TempData["ErrorMessage"] = "Input data is not valid.";
             return View("AddAmountUser", model);
@@ -80,12 +82,13 @@ namespace MVC_SchoolProject.Controllers
                 if (success)
                 {
                     TempData["Message"] = "Amount successfully added!";
+                    return RedirectToAction("AdminView");
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Failed to add amount.";
+                    return View("AddAmountClass", model);
                 }
-                return RedirectToAction("AdminView");
             }
             TempData["ErrorMessage"] = "Input data is not valid.";
             return View("AddAmountClass", model);
