@@ -34,9 +34,9 @@ namespace WebApi_SchoolProject.Controllers
             _transactionManagerService = transactionManagerService;
         }
 
-        //...api/adminAccount/createaccount/uuid
+        //...api/adminAccount/createaccount/uuid/*{Uuid}*/
         // create an Account in the table Account based on a UUID in the table SAP 
-        [HttpPost("createaccount {Uuid}")]
+        [HttpPost("createaccount")]
         [Authorize(Policy = "RequireAdminDepartement")]
         public IActionResult CreateUser([FromBody] CreateUserRequest request)
         {

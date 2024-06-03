@@ -46,7 +46,7 @@ namespace MVC_SchoolProject.Services
             
         }
 
-        public async Task<bool> CreateUser(Guid Uuid, string password)
+        public async Task<bool> CreateUser(Guid uuid, string password)
         {
             var token = _httpContextAccessor.HttpContext.Session.GetString("token");
             if (token != null)
@@ -54,8 +54,8 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var content = JsonContent.Create(new {Uuid, password });
-            var response = await _httpClient.PostAsync(_baseUrl + "/createaccount", content);
+            var content = JsonContent.Create(new {uuid, password });
+            var response = await _httpClient.PostAsync($"{_baseUrl}/createaccount", content);
 
             var responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine($"Response Status: {response.StatusCode}, Body: {responseBody}");
@@ -105,7 +105,7 @@ namespace MVC_SchoolProject.Services
             }
 
             var content = JsonContent.Create(new { amount });
-            var response = await _httpClient.PostAsync(_baseUrl + "/chargeAll", content);
+            var response = await _httpClient.PostAsync($"{_baseUrl}/chargeAll?amount={amount}",content);
 
             return response.IsSuccessStatusCode;
         }
