@@ -83,7 +83,7 @@ namespace WebApi_SchoolProject.Controllers
             //Foreach student we retrieve his account and charge it with the amount and store a new transaction
             foreach (var student in listOfStudents)
             {
-                if (student.Class.Name == studentClass.Name)
+                if (student.Class != null && student.Class.Name == studentClass.Name)
                 {
                     var account = await _studentService.GetAccountFromUsername(student.UserName);
                     //var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UUID == student.UUID);
@@ -154,7 +154,7 @@ namespace WebApi_SchoolProject.Controllers
             List<StudentsInfoM> listStudentByClass = new List<StudentsInfoM>();
             foreach (var student in listOfStudents)
             {
-                if (student.Class.Name == className)
+                if (student.Class != null && student.Class.Name == className)
                 {
                     StudentsInfoM studentinfo = await _studentService.GetUsersInfo(student.UUID);
                     listStudentByClass.Add(studentinfo);
