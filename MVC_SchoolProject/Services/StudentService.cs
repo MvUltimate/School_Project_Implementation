@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace MVC_SchoolProject.Services
 {
-    public class StudentService : IUserService
+    public class StudentService : IStudentService
     {
 
         private readonly HttpClient _httpClient;
@@ -48,7 +48,7 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
             // Sends a HTTP GET request to the API to retrieve student information
-            return await _httpClient.GetFromJsonAsync<StudentsInfoM>(_baseUrl+"/infos");
+            return await _httpClient.GetFromJsonAsync<StudentsInfoM>(_baseUrl + "/infos");
         }
 
         public async Task<List<TransactionModel>> checkTransaction()

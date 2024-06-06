@@ -8,7 +8,7 @@ using MVC_SchoolProject.Models;
 
 namespace MVC_SchoolProject.Services
 {
-    public class AdminService : IUserService
+    public class AdminService : IAdminService
     {
         private readonly HttpClient _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -36,14 +36,14 @@ namespace MVC_SchoolProject.Services
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return users;  
+                return users;
             }
             else
             {
                 // Handle HTTP error response
                 return new List<AdminModel>();
             }
-            
+
         }
 
         public async Task<bool> CreateUser(Guid uuid, string password)
@@ -54,7 +54,7 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var content = JsonContent.Create(new {uuid, password });
+            var content = JsonContent.Create(new { uuid, password });
             var response = await _httpClient.PostAsync($"{_baseUrl}/createaccount", content);
 
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -105,7 +105,7 @@ namespace MVC_SchoolProject.Services
             }
 
             var content = JsonContent.Create(new { amount });
-            var response = await _httpClient.PostAsync($"{_baseUrl}/chargeAll?amount={amount}",content);
+            var response = await _httpClient.PostAsync($"{_baseUrl}/chargeAll?amount={amount}", content);
 
             return response.IsSuccessStatusCode;
         }
