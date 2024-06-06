@@ -50,7 +50,7 @@ namespace WebApi_SchoolProject.Controllers
                 return Unauthorized("User not authenticated");
             }
             var account = await _studentService.GetAccountFromUsername(userNameClaim.Value);
-             await _transactionManagerService.AddCredit(account, chargequest.amount);
+            await _transactionManagerService.AddCredit(account, chargequest.amount);
             //The transaction is done by the Student Himself
             await _transactionManagerService.WriteTransaction(account.UUID, account.UUID, chargequest.amount);
             return Ok("Account charged successfully");
@@ -74,5 +74,27 @@ namespace WebApi_SchoolProject.Controllers
             var transactions = await _studentService.GetTransactions(uuid);
             return Ok(transactions);
         }
+
+        
+
+        [HttpGet("infos/{username}")]
+        public async Task<IActionResult> GetUserInfo(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest("Username is required");
+            }
+
+            var userInfo = await _studentService.GetNumberOfPage(username);
+            if (userInfo == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return Ok(userInfo);
+        }
+        
+
+
     }
 }

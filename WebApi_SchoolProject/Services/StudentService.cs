@@ -2,6 +2,7 @@
 using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using WebApi_SchoolProject.Models;
@@ -88,6 +89,27 @@ namespace WebApi_SchoolProject.Services
                 transactionMs.Add(transactionM);
             }
             return transactionMs;
+        }
+
+        public async Task<AmountPagesM> GetNumberOfPage(string username)
+        {
+            // Retrieve informations of the user (SAP)
+            var sapUser = await _context.SAPs
+                .Include(s => s.Class) // Include the studentClass
+                .FirstOrDefaultAsync(u => u.UserName == username);
+
+            // Retrieve the user Account 
+            var userAccount = await _context.Accounts
+                .FirstOrDefaultAsync(a => a.UUID == sapUser.UUID);
+
+            // Mapp the informations to the StudentsInfoM
+            var userInfo = new AmountPagesM
+            {
+                UserName = sapUser.UserName,
+                NbrPage = _transactionManagerService.ConvertMoneyToQuota(userAccount.Amount),
+            };
+
+            return userInfo;
         }
 
 
