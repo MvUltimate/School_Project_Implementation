@@ -42,5 +42,12 @@ namespace MVC_SchoolProject.Controllers
                 return View();
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewTransaction()
+        {
+            var result = await _studentService.checkTransaction();
+            return View(result);
+        }
     }
 }

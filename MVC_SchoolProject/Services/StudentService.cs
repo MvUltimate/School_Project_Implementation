@@ -48,5 +48,16 @@ namespace MVC_SchoolProject.Services
             return await _httpClient.GetFromJsonAsync<StudentsInfoM>(_baseUrl+"/infos");
         }
 
+        public async Task<TransactionModel> checkTransaction()
+        {
+            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            //Add the token to verify the authorization
+            if (token != null)
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            return await _httpClient.GetFromJsonAsync<TransactionModel>(_baseUrl + "/transactions");
+        }
+
     }
 }

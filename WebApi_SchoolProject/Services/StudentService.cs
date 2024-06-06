@@ -79,7 +79,7 @@ namespace WebApi_SchoolProject.Services
                 var receiver = await _context.SAPs.FirstOrDefaultAsync(r=> r.UUID == transaction.Receiver);
                 var transactionM = new TransactionM
                 {   
-
+                    TransactionId = transaction.TransactionId,
                     Receiver = receiver.UserName,
                     Sender = sender.UserName,
                     Amount = transaction.Amount,
