@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using MVC_SchoolProject.Models;
+using NuGet.Common;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace MVC_SchoolProject.Services
 {
@@ -48,15 +51,29 @@ namespace MVC_SchoolProject.Services
             return await _httpClient.GetFromJsonAsync<StudentsInfoM>(_baseUrl+"/infos");
         }
 
-        public async Task<TransactionModel> checkTransaction()
+        public async Task<List<TransactionModel>> checkTransaction()
         {
             var token = _httpContextAccessor.HttpContext.Session.GetString("token");
-            //Add the token to verify the authorization
             if (token != null)
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
-            return await _httpClient.GetFromJsonAsync<TransactionModel>(_baseUrl + "/transactions");
+
+            var response = await _httpClient.GetAsync($"{_baseUrl}/transactions");
+            //Add the token to verify the authorization
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<TransactionModel>>(jsonString, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            else
+            {
+                // Handle HTTP error response
+                return new List<TransactionModel>();
+            }
         }
 
     }

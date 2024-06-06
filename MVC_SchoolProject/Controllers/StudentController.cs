@@ -44,7 +44,7 @@ namespace MVC_SchoolProject.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ViewTransaction()
+        public async Task<IActionResult> ViewTransactions()
         {
             var result = await _studentService.checkTransaction();
             return View(result);
