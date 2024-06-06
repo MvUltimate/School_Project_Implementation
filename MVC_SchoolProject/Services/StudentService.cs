@@ -1,7 +1,5 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MVC_SchoolProject.Models;
-using NuGet.Common;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
