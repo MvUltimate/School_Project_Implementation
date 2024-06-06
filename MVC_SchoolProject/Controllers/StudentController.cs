@@ -32,6 +32,11 @@ namespace MVC_SchoolProject.Controllers
         [HttpPost]
         public async Task<IActionResult>ChargeAmount(double amount)
          {
+            if (amount<0)
+            {
+                TempData["ErrorMessage"] = "Impossible to charge negative amount";
+                return View();
+            }
             var result = await _studentService.chargeAmount(amount);
             if (result)
             {
