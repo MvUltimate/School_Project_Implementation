@@ -9,7 +9,7 @@ namespace WebApi_SchoolProject.Services
     public class AccountService
     {
 
-        public void CreateUser( Guid uuid, string password)
+        public void CreateUser( Guid uuid)
         {
             using var context = new SchoolContext();
 
@@ -19,19 +19,11 @@ namespace WebApi_SchoolProject.Services
             {
                 throw new InvalidOperationException("The user with this UUID doesn't exist.");
             }
-           
-            //Generate a random salt
-            string salt = BCrypt.Net.BCrypt.GenerateSalt();
-
-            // Hash the password with the salt
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
 
             // Register the new Account of the user
             Account newUser = new Account
             {
                 UUID = uuid,
-                password = hashedPassword,
-                salt = salt 
             };
 
             context.Add(newUser);

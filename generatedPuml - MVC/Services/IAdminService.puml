@@ -1,0 +1,10 @@
+@startuml
+interface IAdminService {
+    AddAmountAll(amount:double) : Task<bool>
+    AddAmountClass(Class:string, Amount:double) : Task<bool>
+    AddAmountUser(username:string, amount:double) : Task<bool>
+    CreateUser(uuid:Guid, password:string) : Task<bool>
+    GetAllUsers() : Task<List<AdminModel>>
+    GetTransactionsFromUser(username:string) : Task<List<TransactionModel>>
+}
+@enduml

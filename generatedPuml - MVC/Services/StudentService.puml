@@ -1,0 +1,12 @@
+@startuml
+class StudentService {
+    - <<readonly>> _baseUrl : string = "https://localhost:7252/api/studentsaccount"
+    + StudentService(httpClient:HttpClient, httpContextAccessor:IHttpContextAccessor)
+    + <<async>> chargeAmount(amount:double) : Task<bool>
+    + <<async>> checkInfo() : Task<StudentsInfoM>
+    + <<async>> checkTransaction() : Task<List<TransactionModel>>
+}
+IStudentService <|-- StudentService
+StudentService --> "_httpClient" HttpClient
+StudentService --> "_httpContextAccessor" IHttpContextAccessor
+@enduml

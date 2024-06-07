@@ -1,0 +1,28 @@
+@startuml
+!include .\\Program.puml
+!include .\\Controllers\AdminController.puml
+!include .\\Controllers\LoginController.puml
+!include .\\Controllers\StudentController.puml
+!include .\\Models\AdminModel.puml
+!include .\\Models\ChargeClassModel.puml
+!include .\\Models\ChargeUserModel.puml
+!include .\\Models\CreateUserModel.puml
+!include .\\Models\LoginModel.puml
+!include .\\Models\LoginResult.puml
+!include .\\Models\StudentsInfoM.puml
+!include .\\Models\TransactionModel.puml
+!include .\\Pages\Error.cshtml.puml
+!include .\\Pages\Index.cshtml.puml
+!include .\\Pages\Privacy.cshtml.puml
+!include .\\Services\AdminService.puml
+!include .\\Services\AuthService.puml
+!include .\\Services\IAdminService.puml
+!include .\\Services\IAuthService.puml
+!include .\\Services\IStudentService.puml
+!include .\\Services\StudentService.puml
+!include .\\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.puml
+!include .\\obj\Debug\net8.0\MVC_SchoolProject.AssemblyInfo.puml
+!include .\\obj\Debug\net8.0\MVC_SchoolProject.GlobalUsings.g.puml
+!include .\\obj\Debug\net8.0\MVC_SchoolProject.MvcApplicationPartsAssemblyInfo.puml
+!include .\\obj\Debug\net8.0\MVC_SchoolProject.RazorAssemblyInfo.puml
+@enduml

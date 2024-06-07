@@ -1,0 +1,15 @@
+@startuml
+class AdminService {
+    - <<readonly>> _baseUrl : string = "https://localhost:7252/api/AdminAccounts"
+    + AdminService(httpClient:HttpClient, httpContextAccessor:IHttpContextAccessor)
+    + <<async>> GetAllUsers() : Task<List<AdminModel>>
+    + <<async>> CreateUser(uuid:Guid, password:string) : Task<bool>
+    + <<async>> AddAmountUser(username:string, amount:double) : Task<bool>
+    + <<async>> AddAmountClass(Class:string, Amount:double) : Task<bool>
+    + <<async>> AddAmountAll(amount:double) : Task<bool>
+    + <<async>> GetTransactionsFromUser(username:string) : Task<List<TransactionModel>>
+}
+IAdminService <|-- AdminService
+AdminService --> "_httpClient" HttpClient
+AdminService --> "_httpContextAccessor" IHttpContextAccessor
+@enduml

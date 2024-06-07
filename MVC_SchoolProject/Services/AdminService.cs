@@ -22,12 +22,7 @@ namespace MVC_SchoolProject.Services
 
         public async Task<List<AdminModel>> GetAllUsers()
         {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
+            
             var response = await _httpClient.GetAsync(_baseUrl);
             if (response.IsSuccessStatusCode)
             {
@@ -46,15 +41,10 @@ namespace MVC_SchoolProject.Services
 
         }
 
-        public async Task<bool> CreateUser(Guid uuid, string password)
+        public async Task<bool> CreateUser(Guid uuid)
         {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            var content = JsonContent.Create(new { uuid, password });
+            
+            var content = JsonContent.Create(new { uuid });
             var response = await _httpClient.PostAsync($"{_baseUrl}/createaccount", content);
 
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -65,11 +55,7 @@ namespace MVC_SchoolProject.Services
 
         public async Task<bool> AddAmountUser(string username, double amount)
         {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+            
             var content = JsonContent.Create(new { username, amount });
             var response = await _httpClient.PostAsync($"{_baseUrl}/chargeamount", content);
 
@@ -81,11 +67,7 @@ namespace MVC_SchoolProject.Services
 
         public async Task<bool> AddAmountClass(string Class, double Amount)
         {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+           
 
             var content = JsonContent.Create(new { Class, Amount });
             var response = await _httpClient.PostAsync($"{_baseUrl}/chargeClass", content);
@@ -98,12 +80,7 @@ namespace MVC_SchoolProject.Services
 
         public async Task<bool> AddAmountAll(double amount)
         {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
+      
             var content = JsonContent.Create(new { amount });
             var response = await _httpClient.PostAsync($"{_baseUrl}/chargeAll?amount={amount}", content);
 
@@ -112,11 +89,7 @@ namespace MVC_SchoolProject.Services
 
         public async Task<List<TransactionModel>> GetTransactionsFromUser(string username)
         {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+
 
             var response = await _httpClient.GetAsync($"{_baseUrl}/getUserTransaction?username={username}");
             if (response.IsSuccessStatusCode)

@@ -1,0 +1,6 @@
+@startuml
+class ChargeClassModel {
+    + className : string <<get>> <<set>>
+    + amount : double <<get>> <<set>>
+}
+@enduml

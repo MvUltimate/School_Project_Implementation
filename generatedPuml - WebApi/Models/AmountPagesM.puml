@@ -1,0 +1,6 @@
+@startuml
+class AmountPagesM {
+    + Index() : IActionResult
+}
+Controller <|-- AmountPagesM
+@enduml

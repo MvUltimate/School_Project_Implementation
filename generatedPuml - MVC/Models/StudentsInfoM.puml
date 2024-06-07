@@ -1,0 +1,10 @@
+@startuml
+class StudentsInfoM {
+    + UserName : string <<get>> <<set>>
+    + Amount : double <<get>> <<set>>
+    + NbrPage : int <<get>> <<set>>
+    + Class : string <<get>> <<set>>
+    + DepartmentId : int <<get>> <<set>>
+}
+StudentsInfoM --> "Uuid" Guid
+@enduml

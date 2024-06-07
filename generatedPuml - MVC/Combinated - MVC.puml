@@ -1,0 +1,173 @@
+@startuml
+class AdminService {
+    - <<readonly>> _baseUrl : string = "https://localhost:7252/api/AdminAccounts"
+    + AdminService(httpClient:HttpClient, httpContextAccessor:IHttpContextAccessor)
+    + <<async>> GetAllUsers() : Task<List<AdminModel>>
+    + <<async>> CreateUser(uuid:Guid, password:string) : Task<bool>
+    + <<async>> AddAmountUser(username:string, amount:double) : Task<bool>
+    + <<async>> AddAmountClass(Class:string, Amount:double) : Task<bool>
+    + <<async>> AddAmountAll(amount:double) : Task<bool>
+    + <<async>> GetTransactionsFromUser(username:string) : Task<List<TransactionModel>>
+}
+IAdminService <|-- AdminService
+AdminService --> "_httpClient" HttpClient
+AdminService --> "_httpContextAccessor" IHttpContextAccessor
+@enduml
+
+@startuml
+class AuthService {
+    - <<readonly>> _baseUrl : string = "https://localhost:7252/api/login/authenticate"
+    + AuthService(httpClient:HttpClient)
+    + <<async>> LoginAsync(username:string, password:string) : Task<LoginResult>
+}
+IAuthService <|-- AuthService
+AuthService --> "_httpClient" HttpClient
+@enduml
+
+@startuml
+interface IAdminService {
+    AddAmountAll(amount:double) : Task<bool>
+    AddAmountClass(Class:string, Amount:double) : Task<bool>
+    AddAmountUser(username:string, amount:double) : Task<bool>
+    CreateUser(uuid:Guid, password:string) : Task<bool>
+    GetAllUsers() : Task<List<AdminModel>>
+    GetTransactionsFromUser(username:string) : Task<List<TransactionModel>>
+}
+@enduml
+
+@startuml
+interface IAuthService {
+    LoginAsync(username:string, password:string) : Task<LoginResult>
+}
+@enduml
+
+@startuml
+interface IStudentService {
+    chargeAmount(amount:double) : Task<bool>
+    checkInfo() : Task<StudentsInfoM>
+    checkTransaction() : Task<List<TransactionModel>>
+}
+@enduml
+
+@startuml
+class StudentService {
+    - <<readonly>> _baseUrl : string = "https://localhost:7252/api/studentsaccount"
+    + StudentService(httpClient:HttpClient, httpContextAccessor:IHttpContextAccessor)
+    + <<async>> chargeAmount(amount:double) : Task<bool>
+    + <<async>> checkInfo() : Task<StudentsInfoM>
+    + <<async>> checkTransaction() : Task<List<TransactionModel>>
+}
+IStudentService <|-- StudentService
+StudentService --> "_httpClient" HttpClient
+StudentService --> "_httpContextAccessor" IHttpContextAccessor
+@enduml
+
+@startuml
+class AdminController {
+    + AdminController(adminService:AdminService)
+    + <<async>> AdminView() : Task<IActionResult>
+    + <<async>> ViewTransactions(username:string) : Task<IActionResult>
+    + AddAmountUser() : IActionResult
+    + <<async>> AddAmountUser(model:ChargeUserModel) : Task<IActionResult>
+    + AddAmountClass() : IActionResult
+    + <<async>> AddAmountClass(model:ChargeClassModel) : Task<IActionResult>
+    + <<async>> AddAmountAll() : Task<IActionResult>
+    + <<async>> AddAmountAll(amount:double) : Task<IActionResult>
+    + CreateUser() : IActionResult
+    + <<async>> CreateUser(model:CreateUserModel) : Task<IActionResult>
+}
+Controller <|-- AdminController
+AdminController --> "_adminService" AdminService
+@enduml
+
+@startuml
+class LoginController {
+    + LoginController(authService:AuthService, studentService:StudentService)
+    + Login() : IActionResult
+    + <<async>> Login(loginModel:LoginModel) : Task<IActionResult>
+}
+Controller <|-- LoginController
+LoginController --> "_authService" AuthService
+LoginController --> "_studentService" StudentService
+@enduml
+
+@startuml
+class StudentController {
+    + StudentController(studentService:StudentService)
+    + <<async>> Info() : Task<IActionResult>
+    + <<async>> ChargeAmount() : Task<IActionResult>
+    + <<async>> ChargeAmount(amount:double) : Task<IActionResult>
+    + <<async>> ViewTransactions() : Task<IActionResult>
+}
+Controller <|-- StudentController
+StudentController --> "_studentService" StudentService
+@enduml
+
+@startuml
+class AdminModel {
+    + UserName : string <<get>> <<set>>
+    + Amount : double <<get>> <<set>>
+    + NbrPage : int <<get>> <<set>>
+    + Class : string <<get>> <<set>>
+    + DepartmentId : int <<get>> <<set>>
+}
+AdminModel --> "Uuid" Guid
+@enduml
+
+@startuml
+class ChargeClassModel {
+    + className : string <<get>> <<set>>
+    + amount : double <<get>> <<set>>
+}
+@enduml
+
+@startuml
+class ChargeUserModel {
+    + Username : string <<get>> <<set>>
+    + amount : double <<get>> <<set>>
+}
+@enduml
+
+@startuml
+class CreateUserModel {
+    + Password : string <<get>> <<set>>
+}
+CreateUserModel --> "Uid" Guid
+@enduml
+
+@startuml
+class LoginModel {
+    + Username : string <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+}
+@enduml
+
+@startuml
+class LoginResult {
+    + Success : bool <<get>> <<set>>
+    + Token : string <<get>> <<set>>
+    + ErrorMessage : string <<get>> <<set>>
+}
+@enduml
+
+@startuml
+class StudentsInfoM {
+    + UserName : string <<get>> <<set>>
+    + Amount : double <<get>> <<set>>
+    + NbrPage : int <<get>> <<set>>
+    + Class : string <<get>> <<set>>
+    + DepartmentId : int <<get>> <<set>>
+}
+StudentsInfoM --> "Uuid" Guid
+@enduml
+
+@startuml
+class TransactionModel {
+    + TransactionId : int <<get>> <<set>>
+    + Receiver : string <<get>> <<set>>
+    + Sender : string <<get>> <<set>>
+    + Date : string <<get>> <<set>>
+    + Amount : double <<get>> <<set>>
+}
+@enduml
+

@@ -1,0 +1,13 @@
+@startuml
+class LoginController {
+    + LoginController(authService:AuthService)
+    + Login(request:LoginRequest) : IActionResult
+}
+class LoginRequest {
+    + username : string <<get>> <<set>>
+    + password : string <<get>> <<set>>
+}
+ControllerBase <|-- LoginController
+LoginController --> "_authService" AuthService
+LoginController +-- LoginRequest
+@enduml

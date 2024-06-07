@@ -1,0 +1,7 @@
+@startuml
+interface IStudentService {
+    chargeAmount(amount:double) : Task<bool>
+    checkInfo() : Task<StudentsInfoM>
+    checkTransaction() : Task<List<TransactionModel>>
+}
+@enduml

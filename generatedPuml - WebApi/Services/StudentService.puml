@@ -1,0 +1,11 @@
+@startuml
+class StudentService {
+    + StudentService(context:SchoolContext, transactionManagerService:TransactionManagerService)
+    + <<async>> GetAccountFromUsername(username:string) : Task<Account>
+    + <<async>> GetUsersInfo(uuid:Guid) : Task<StudentsInfoM>
+    + <<async>> GetTransactions(uuid:Guid) : Task<List<TransactionM>>
+    + <<async>> GetNumberOfPage(username:string) : Task<AmountPagesM>
+}
+StudentService --> "_context" SchoolContext
+StudentService --> "_transactionManagerService" TransactionManagerService
+@enduml

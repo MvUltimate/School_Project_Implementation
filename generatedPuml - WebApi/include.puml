@@ -1,0 +1,20 @@
+@startuml
+!include .\\Program.puml
+!include .\\Controllers\AdminAccountsController.puml
+!include .\\Controllers\LoginController.puml
+!include .\\Controllers\SAPsController.puml
+!include .\\Controllers\StudentsAccountController.puml
+!include .\\Models\AccountM.puml
+!include .\\Models\AmountPagesM.puml
+!include .\\Models\AmountPagesM_conflict_20240606_172659_zsCV1lWfXH.puml
+!include .\\Models\StudentsInfoM.puml
+!include .\\Models\TransactionM.puml
+!include .\\Services\AccountService.puml
+!include .\\Services\AuthService.puml
+!include .\\Services\StudentService.puml
+!include .\\Services\TransactionManagerService.puml
+!include .\\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.puml
+!include .\\obj\Debug\net8.0\WebApi_SchoolProject.AssemblyInfo.puml
+!include .\\obj\Debug\net8.0\WebApi_SchoolProject.GlobalUsings.g.puml
+!include .\\obj\Debug\net8.0\WebApi_SchoolProject.MvcApplicationPartsAssemblyInfo.puml
+@enduml

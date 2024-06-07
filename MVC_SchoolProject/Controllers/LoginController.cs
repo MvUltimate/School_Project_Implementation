@@ -25,15 +25,12 @@ namespace MVC_SchoolProject.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)
-        {       
-                //Verify that the login is successful and the token is not null
-                
-            var loginResult = await _authService.LoginAsync(loginModel.Username, loginModel.Password);
+        {
+            var loginResult = await _authService.LoginAsync(loginModel.Username);
 
             if (loginResult.Success)
             {
-                HttpContext.Session.SetString("token", loginResult.Token);
-                var userInfo = await _studentService.checkInfo();
+                var userInfo = await _studentService.CheckInfo(loginModel.Username); // Pass the username to get user info
 
                 if (userInfo.DepartmentId == 1)
                 {
@@ -44,12 +41,14 @@ namespace MVC_SchoolProject.Controllers
                     return RedirectToAction("AdminView", "Admin");
                 }
             }
+
             // Stocker le message d'erreur dans ViewBag
             ViewBag.ErrorMessage = loginResult.ErrorMessage;
 
             return View(loginModel);
         }
-        
-        
+
+
+
     }
 }

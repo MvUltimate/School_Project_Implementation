@@ -5,7 +5,6 @@ namespace MVC_SchoolProject.Models
     public class CreateUserModel
     {
         public Guid Uid { get; set; }
-        public string Password { get; set; }
        
     }
 }

@@ -1,0 +1,9 @@
+@startuml
+class AuthService {
+    - <<readonly>> _baseUrl : string = "https://localhost:7252/api/login/authenticate"
+    + AuthService(httpClient:HttpClient)
+    + <<async>> LoginAsync(username:string, password:string) : Task<LoginResult>
+}
+IAuthService <|-- AuthService
+AuthService --> "_httpClient" HttpClient
+@enduml

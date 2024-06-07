@@ -1,0 +1,7 @@
+@startuml
+class AuthService {
+    + Authenticate(username:string, password:string) : string
+    - getUserSAP(username:string) : SAP
+    - login(username:string, password:string) : bool
+}
+@enduml

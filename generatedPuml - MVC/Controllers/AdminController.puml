@@ -1,0 +1,17 @@
+@startuml
+class AdminController {
+    + AdminController(adminService:AdminService)
+    + <<async>> AdminView() : Task<IActionResult>
+    + <<async>> ViewTransactions(username:string) : Task<IActionResult>
+    + AddAmountUser() : IActionResult
+    + <<async>> AddAmountUser(model:ChargeUserModel) : Task<IActionResult>
+    + AddAmountClass() : IActionResult
+    + <<async>> AddAmountClass(model:ChargeClassModel) : Task<IActionResult>
+    + <<async>> AddAmountAll() : Task<IActionResult>
+    + <<async>> AddAmountAll(amount:double) : Task<IActionResult>
+    + CreateUser() : IActionResult
+    + <<async>> CreateUser(model:CreateUserModel) : Task<IActionResult>
+}
+Controller <|-- AdminController
+AdminController --> "_adminService" AdminService
+@enduml

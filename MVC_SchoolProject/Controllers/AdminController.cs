@@ -128,7 +128,7 @@ namespace MVC_SchoolProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                var success = await _adminService.CreateUser(model.Uid, model.Password);
+                var success = await _adminService.CreateUser(model.Uid);
                 if (success)
                 {
                     TempData["Message"] = "Utilisateur créé avec succès !";

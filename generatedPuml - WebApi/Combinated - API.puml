@@ -1,0 +1,145 @@
+@startuml
+class AccountService {
+    + CreateUser(uuid:Guid, password:string) : void
+}
+@enduml
+
+@startuml
+class AuthService {
+    + Authenticate(username:string, password:string) : string
+    - getUserSAP(username:string) : SAP
+    - login(username:string, password:string) : bool
+}
+@enduml
+
+@startuml
+class StudentService {
+    + StudentService(context:SchoolContext, transactionManagerService:TransactionManagerService)
+    + <<async>> GetAccountFromUsername(username:string) : Task<Account>
+    + <<async>> GetUsersInfo(uuid:Guid) : Task<StudentsInfoM>
+    + <<async>> GetTransactions(uuid:Guid) : Task<List<TransactionM>>
+    + <<async>> GetNumberOfPage(username:string) : Task<AmountPagesM>
+}
+StudentService --> "_context" SchoolContext
+StudentService --> "_transactionManagerService" TransactionManagerService
+@enduml
+
+@startuml
+class TransactionManagerService {
+    + TransactionManagerService(context:SchoolContext)
+    + ConvertMoneyToQuota(amount:double) : int
+    + <<async>> AddCredit(account:Account, amount:double) : Task
+    + <<async>> WriteTransaction(accountCredited:Guid, accountSender:Guid, amount:double) : Task
+}
+TransactionManagerService --> "_schoolContext" SchoolContext
+@enduml
+
+@startuml
+class AccountM {
+    + Amount : double <<get>> <<set>>
+}
+AccountM --> "UUID" Guid
+@enduml
+
+@startuml
+class AmountPagesM {
+    + Index() : IActionResult
+}
+Controller <|-- AmountPagesM
+@enduml
+
+@startuml
+class StudentsInfoM {
+    + UserName : string <<get>> <<set>>
+    + Amount : double <<get>> <<set>>
+    + NbrPage : int <<get>> <<set>>
+    + Class : string <<get>> <<set>>
+    + DepartmentId : int <<get>> <<set>>
+}
+StudentsInfoM --> "Uuid" Guid
+@enduml
+
+@startuml
+class TransactionM {
+    + TransactionId : int <<get>> <<set>>
+    + Receiver : string <<get>> <<set>>
+    + Sender : string <<get>> <<set>>
+    + Date : string <<get>> <<set>>
+    + Amount : double <<get>> <<set>>
+}
+@enduml
+
+@startuml
+class LoginController {
+    + LoginController(authService:AuthService)
+    + Login(request:LoginRequest) : IActionResult
+}
+class LoginRequest {
+    + username : string <<get>> <<set>>
+    + password : string <<get>> <<set>>
+}
+ControllerBase <|-- LoginController
+LoginController --> "_authService" AuthService
+LoginController +-- LoginRequest
+@enduml
+
+@startuml
+class SAPsController {
+    + SAPsController(context:SchoolContext)
+    + <<async>> GetSAPs() : Task<ActionResult<IEnumerable<SAP>>>
+}
+ControllerBase <|-- SAPsController
+SAPsController --> "_context" SchoolContext
+@enduml
+
+@startuml
+class StudentsAccountController {
+    + StudentsAccountController(studentService:StudentService, transactionManagerService:TransactionManagerService)
+    + <<async>> GetUserInfo() : Task<IActionResult>
+    + <<async>> ChargeAccount(chargequest:ChargeRequest) : Task<IActionResult>
+    + <<async>> GetTransactions() : Task<ActionResult<IEnumerable<TransactionM>>>
+    + <<async>> GetUserInfo(username:string) : Task<IActionResult>
+}
+class ChargeRequest {
+    + amount : double <<get>> <<set>>
+}
+ControllerBase <|-- StudentsAccountController
+StudentsAccountController --> "_studentService" StudentService
+StudentsAccountController --> "_transactionManagerService" TransactionManagerService
+StudentsAccountController +-- ChargeRequest
+@enduml
+
+@startuml
+class AdminAccountsController {
+    + AdminAccountsController(context:SchoolContext, accountService:AccountService, studentService:StudentService, transactionManagerService:TransactionManagerService)
+    + CreateUser(request:CreateUserRequest) : IActionResult
+    + <<async>> ChargeClass(chargeClassRequest:ChargeClassRequest) : Task <ActionResult>
+    + <<async>> GetAccounts() : Task<ActionResult<IEnumerable<StudentsInfoM>>>
+    + <<async>> GetAccount(username:string) : Task<ActionResult<StudentsInfoM>>
+    + <<async>> GetUserByClass(className:string) : Task<ActionResult<IEnumerable<StudentsInfoM>>>
+    + <<async>> ChargeUserAccount(chargequest:ChargeUserRequest) : Task<IActionResult>
+    + <<async>> ChargeAll(amount:double) : Task<IActionResult>
+    + <<async>> GetTransaction(username:string) : Task<ActionResult<IEnumerable<TransactionM>>>
+}
+class CreateUserRequest {
+    + Password : string <<get>> <<set>>
+}
+class ChargeClassRequest {
+    + Amount : double <<get>> <<set>>
+    + Class : string <<get>> <<set>>
+}
+class ChargeUserRequest {
+    + username : string <<get>> <<set>>
+    + amount : double <<get>> <<set>>
+}
+ControllerBase <|-- AdminAccountsController
+AdminAccountsController --> "_context" SchoolContext
+AdminAccountsController --> "_accountService" AccountService
+AdminAccountsController --> "_studentService" StudentService
+AdminAccountsController --> "_transactionManagerService" TransactionManagerService
+AdminAccountsController +-- CreateUserRequest
+CreateUserRequest --> "UUID" Guid
+AdminAccountsController +-- ChargeClassRequest
+AdminAccountsController +-- ChargeUserRequest
+@enduml
+

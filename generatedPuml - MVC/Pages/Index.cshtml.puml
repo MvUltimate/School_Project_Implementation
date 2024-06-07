@@ -1,0 +1,10 @@
+@startuml
+class IndexModel {
+    + IndexModel(logger:ILogger<IndexModel>)
+    + OnGet() : void
+}
+class "ILogger`1"<T> {
+}
+PageModel <|-- IndexModel
+IndexModel --> "_logger<IndexModel>" "ILogger`1"
+@enduml

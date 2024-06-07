@@ -1,0 +1,9 @@
+@startuml
+class TransactionM {
+    + TransactionId : int <<get>> <<set>>
+    + Receiver : string <<get>> <<set>>
+    + Sender : string <<get>> <<set>>
+    + Date : string <<get>> <<set>>
+    + Amount : double <<get>> <<set>>
+}
+@enduml

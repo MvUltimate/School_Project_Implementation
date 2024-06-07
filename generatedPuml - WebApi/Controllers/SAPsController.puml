@@ -1,0 +1,8 @@
+@startuml
+class SAPsController {
+    + SAPsController(context:SchoolContext)
+    + <<async>> GetSAPs() : Task<ActionResult<IEnumerable<SAP>>>
+}
+ControllerBase <|-- SAPsController
+SAPsController --> "_context" SchoolContext
+@enduml

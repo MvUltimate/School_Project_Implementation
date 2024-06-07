@@ -1,0 +1,11 @@
+@startuml
+class StudentController {
+    + StudentController(studentService:StudentService)
+    + <<async>> Info() : Task<IActionResult>
+    + <<async>> ChargeAmount() : Task<IActionResult>
+    + <<async>> ChargeAmount(amount:double) : Task<IActionResult>
+    + <<async>> ViewTransactions() : Task<IActionResult>
+}
+Controller <|-- StudentController
+StudentController --> "_studentService" StudentService
+@enduml

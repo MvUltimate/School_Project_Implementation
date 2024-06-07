@@ -1,0 +1,10 @@
+@startuml
+class LoginController {
+    + LoginController(authService:AuthService, studentService:StudentService)
+    + Login() : IActionResult
+    + <<async>> Login(loginModel:LoginModel) : Task<IActionResult>
+}
+Controller <|-- LoginController
+LoginController --> "_authService" AuthService
+LoginController --> "_studentService" StudentService
+@enduml

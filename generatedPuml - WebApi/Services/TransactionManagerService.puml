@@ -1,0 +1,9 @@
+@startuml
+class TransactionManagerService {
+    + TransactionManagerService(context:SchoolContext)
+    + ConvertMoneyToQuota(amount:double) : int
+    + <<async>> AddCredit(account:Account, amount:double) : Task
+    + <<async>> WriteTransaction(accountCredited:Guid, accountSender:Guid, amount:double) : Task
+}
+TransactionManagerService --> "_schoolContext" SchoolContext
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+class StudentsAccountController {
+    + StudentsAccountController(studentService:StudentService, transactionManagerService:TransactionManagerService)
+    + <<async>> GetUserInfo() : Task<IActionResult>
+    + <<async>> ChargeAccount(chargequest:ChargeRequest) : Task<IActionResult>
+    + <<async>> GetTransactions() : Task<ActionResult<IEnumerable<TransactionM>>>
+    + <<async>> GetUserInfo(username:string) : Task<IActionResult>
+}
+class ChargeRequest {
+    + amount : double <<get>> <<set>>
+}
+ControllerBase <|-- StudentsAccountController
+StudentsAccountController --> "_studentService" StudentService
+StudentsAccountController --> "_transactionManagerService" TransactionManagerService
+StudentsAccountController +-- ChargeRequest
+@enduml

@@ -17,31 +17,11 @@ namespace WebApi_SchoolProject
             //Retrieve the secret key in the JSON File
             var configurationBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.secrets.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
             var configuration = configurationBuilder.Build();
-            var secretKey = configuration["JwtSettings:SecretKey"];
 
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            //Authentication use Jwt Bearer
-             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                //Configure the different parameters 
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,        
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = "http://localhost",
-                    ValidAudience = "http://localhost",
-                    // Set the symmetric key used to validate the signature of the token.
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-                };
-            });
             // Authorization : Define policies for authorization based on user claims.
             builder.Services.AddAuthorization(options =>
             {
@@ -71,31 +51,7 @@ namespace WebApi_SchoolProject
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "School Project API", Version = "v1" });
-                // Add security definition for Bearer token.
-                // Used on swagger to have graphical indication
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Description = "Please enter into field the word 'Bearer' followed by a space and the JWT value.",
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-                // Add security requirement for Bearer token.
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
+
             });
 
 

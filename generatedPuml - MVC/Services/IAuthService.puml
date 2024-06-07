@@ -1,0 +1,5 @@
+@startuml
+interface IAuthService {
+    LoginAsync(username:string, password:string) : Task<LoginResult>
+}
+@enduml

@@ -23,29 +23,22 @@ using WebApi_SchoolProject.Services;
         [HttpPost("authenticate")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            var token  = _authService.Authenticate(request.username, request.password);
-
-            //Used to the MVC, if we don't return OK, the View will crash
-            //return ok but will be blocked later
-            if (token == null)
-                return Ok(new
-                {
-                    success = false,
-                   
-                });
-
-            return Ok(new
             {
-                success = true,
-                token
-            });
+                var result = _authService.Authenticate(request.username);
+
+                if (result == null)
+                {
+                    return Unauthorized("Invalid username.");
+                }
+
+                return Ok(result);
+            }
 
         }
 
         public class LoginRequest()
         {
             public string username { get; set; }
-            public string password { get; set; }
 
         }
 

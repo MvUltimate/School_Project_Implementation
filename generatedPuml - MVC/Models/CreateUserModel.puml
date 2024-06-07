@@ -1,0 +1,6 @@
+@startuml
+class CreateUserModel {
+    + Password : string <<get>> <<set>>
+}
+CreateUserModel --> "Uid" Guid
+@enduml

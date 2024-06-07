@@ -1,0 +1,5 @@
+@startuml
+class AccountService {
+    + CreateUser(uuid:Guid, password:string) : void
+}
+@enduml

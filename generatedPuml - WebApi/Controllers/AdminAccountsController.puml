@@ -1,0 +1,33 @@
+@startuml
+class AdminAccountsController {
+    + AdminAccountsController(context:SchoolContext, accountService:AccountService, studentService:StudentService, transactionManagerService:TransactionManagerService)
+    + CreateUser(request:CreateUserRequest) : IActionResult
+    + <<async>> ChargeClass(chargeClassRequest:ChargeClassRequest) : Task <ActionResult>
+    + <<async>> GetAccounts() : Task<ActionResult<IEnumerable<StudentsInfoM>>>
+    + <<async>> GetAccount(username:string) : Task<ActionResult<StudentsInfoM>>
+    + <<async>> GetUserByClass(className:string) : Task<ActionResult<IEnumerable<StudentsInfoM>>>
+    + <<async>> ChargeUserAccount(chargequest:ChargeUserRequest) : Task<IActionResult>
+    + <<async>> ChargeAll(amount:double) : Task<IActionResult>
+    + <<async>> GetTransaction(username:string) : Task<ActionResult<IEnumerable<TransactionM>>>
+}
+class CreateUserRequest {
+    + Password : string <<get>> <<set>>
+}
+class ChargeClassRequest {
+    + Amount : double <<get>> <<set>>
+    + Class : string <<get>> <<set>>
+}
+class ChargeUserRequest {
+    + username : string <<get>> <<set>>
+    + amount : double <<get>> <<set>>
+}
+ControllerBase <|-- AdminAccountsController
+AdminAccountsController --> "_context" SchoolContext
+AdminAccountsController --> "_accountService" AccountService
+AdminAccountsController --> "_studentService" StudentService
+AdminAccountsController --> "_transactionManagerService" TransactionManagerService
+AdminAccountsController +-- CreateUserRequest
+CreateUserRequest --> "UUID" Guid
+AdminAccountsController +-- ChargeClassRequest
+AdminAccountsController +-- ChargeUserRequest
+@enduml

@@ -13,9 +13,6 @@ namespace DAL.Models
         public int AccountID { get; set; }
         public Guid UUID {  get; set; }
 
-        public string password { get; set; }
-
-        public string salt { get; set; }
         public double Amount { get; set; } = 0.0;
 
         public ICollection<Transaction> Transactions { get;} = new List<Transaction>();

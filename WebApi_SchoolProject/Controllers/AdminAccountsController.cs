@@ -42,7 +42,7 @@ namespace WebApi_SchoolProject.Controllers
         {
             try
             {
-                _accountService.CreateUser(request.UUID, request.Password);
+                _accountService.CreateUser(request.UUID);
                 return Ok("User created successfully ");
             }
             catch (InvalidOperationException ex)
