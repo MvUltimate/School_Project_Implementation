@@ -74,5 +74,23 @@ namespace WebApi_SchoolProject.Controllers
             var transactions = await _studentService.GetTransactions(uuid);
             return Ok(transactions);
         }
+
+
+        [HttpGet("infos/{username}")]
+        public async Task<IActionResult> GetUserInfo(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest("Username is required");
+            }
+
+            var userInfo = await _studentService.GetNumberOfPage(username);
+            if (userInfo == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return Ok(userInfo);
+        }
     }
 }
