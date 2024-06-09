@@ -7,10 +7,10 @@ namespace MVC_SchoolProject.Controllers
     public class StudentController : Controller
     {
 
-        private readonly StudentService _studentService;
+        private readonly IStudentService _studentService;
        
 
-        public StudentController(StudentService studentService)
+        public StudentController(IStudentService studentService)
         {
             _studentService = studentService;
         }

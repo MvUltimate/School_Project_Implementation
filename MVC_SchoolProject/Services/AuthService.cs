@@ -10,11 +10,12 @@ namespace MVC_SchoolProject.Services
     {
 
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://localhost:7252/api/login/authenticate";
+        private readonly string _baseUrl;
 
-        public AuthService(HttpClient httpClient)
+        public AuthService(HttpClient httpClient,IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _baseUrl = configuration["webAPI:BaseURL"];
         }
 
  
@@ -23,7 +24,7 @@ namespace MVC_SchoolProject.Services
         {
             var loginModel = new { username, password };// Login model containing username and password
             // Sends a POST request to the API to authenticate user
-            var response = await _httpClient.PostAsJsonAsync(_baseUrl, loginModel);
+            var response = await _httpClient.PostAsJsonAsync(_baseUrl+ "/login/authenticate", loginModel);
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();

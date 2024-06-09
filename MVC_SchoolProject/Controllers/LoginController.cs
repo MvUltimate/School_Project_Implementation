@@ -8,10 +8,10 @@ namespace MVC_SchoolProject.Controllers
     public class LoginController : Controller
     {
 
-        private readonly AuthService _authService;
-        private readonly StudentService _studentService;
+        private readonly IAuthService _authService;
+        private readonly IStudentService _studentService;
 
-        public LoginController(AuthService authService, StudentService studentService)
+        public LoginController(IAuthService authService, IStudentService studentService)
         {
             _authService = authService;
             _studentService = studentService;

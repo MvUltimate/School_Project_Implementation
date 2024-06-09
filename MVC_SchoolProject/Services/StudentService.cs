@@ -9,14 +9,15 @@ namespace MVC_SchoolProject.Services
     {
 
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://localhost:7252/api/studentsaccount";
+        private readonly string _baseUrl;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public StudentService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public StudentService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
+            _baseUrl = configuration["webAPI:BaseURL"];
         }
 
         public async Task<bool> chargeAmount(double amount)
@@ -31,7 +32,7 @@ namespace MVC_SchoolProject.Services
             var content = JsonContent.Create(new { amount });
 
             // send the request 
-            var response = await _httpClient.PostAsync(_baseUrl + "/chargeaccount", content);
+            var response = await _httpClient.PostAsync(_baseUrl + "/studentsaccount/chargeaccount", content);
 
             return response.IsSuccessStatusCode; // Returns true if the request was successful, false otherwise
 
@@ -46,7 +47,7 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
             // Sends a HTTP GET request to the API to retrieve student information
-            return await _httpClient.GetFromJsonAsync<StudentsInfoM>(_baseUrl + "/infos");
+            return await _httpClient.GetFromJsonAsync<StudentsInfoM>(_baseUrl + "/studentsaccount/infos");
         }
 
         public async Task<List<TransactionModel>> checkTransaction()
@@ -57,7 +58,7 @@ namespace MVC_SchoolProject.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var response = await _httpClient.GetAsync($"{_baseUrl}/transactions");
+            var response = await _httpClient.GetAsync(_baseUrl + "/studentsaccount/transactions");
             //Add the token to verify the authorization
             if (response.IsSuccessStatusCode)
             {

@@ -7,8 +7,6 @@ namespace DAL
     //Identity pour pouvoir faire de l'authentification
     public class SchoolContext : DbContext
     {
-
-
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Class> Classes { get; set; }
         
@@ -20,14 +18,10 @@ namespace DAL
 
         public SchoolContext(DbContextOptions<SchoolContext> options) : base(options) { }
 
-        public SchoolContext()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        /*protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=SchoolProject");
-        }
+        }*/
         public void DropDatabase()
         {
             Database.EnsureDeleted();

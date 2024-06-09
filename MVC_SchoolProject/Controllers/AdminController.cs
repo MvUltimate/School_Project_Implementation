@@ -6,15 +6,14 @@ using MVC_SchoolProject.Services;
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using static WebApi_SchoolProject.Controllers.AdminAccountsController;
 
 namespace MVC_SchoolProject.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly AdminService _adminService;
+        private readonly IAdminService _adminService;
 
-        public AdminController(AdminService adminService)
+        public AdminController(IAdminService adminService)
         {
             _adminService = adminService;
         }

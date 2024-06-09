@@ -102,7 +102,7 @@ namespace WebApi_SchoolProject.Controllers
             public string Class { get; set; }
         }
 
-        // GET: api/adminaccount
+        // GET: api/adminaccounts
         //return all the accounts
         [HttpGet]
         [Authorize(Policy = "RequireAdminDepartement")]
@@ -198,7 +198,7 @@ namespace WebApi_SchoolProject.Controllers
         // charge the account of all students
         [HttpPost("chargeAll")]
         [Authorize(Policy = "RequireAdminDepartement")]
-        public async Task<IActionResult> ChargeAll(double amount)
+        public async Task<IActionResult> ChargeAll([FromQuery]double amount)
         {
             var uuid = User.FindFirst("UUID");
             var senderuuid = new Guid(uuid.Value);

@@ -1,10 +1,12 @@
 
 using DAL;
+using DAL.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Configuration;
 using System.Text;
 using WebApi_SchoolProject.Services;
 
@@ -15,29 +17,24 @@ namespace WebApi_SchoolProject
         public static void Main(string[] args)
         {
             //Retrieve the secret key in the JSON File
-            var configurationBuilder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.secrets.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables();
-            var configuration = configurationBuilder.Build();
-            var secretKey = configuration["JwtSettings:SecretKey"];
+          
+            
 
             var builder = WebApplication.CreateBuilder(args);
+            var secretKey = builder.Configuration["JwtSettings:SecretKey"];
 
             // Add services to the container.
             //Authentication use Jwt Bearer
-             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 //Configure the different parameters 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,        
+                    ValidateIssuer = false,
+                    ValidateAudience = false,        
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "http://localhost",
-                    ValidAudience = "http://localhost",
                     // Set the symmetric key used to validate the signature of the token.
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 };
@@ -52,11 +49,11 @@ namespace WebApi_SchoolProject
 
             builder.Services.AddControllers();
             //Add the DB context to use the database
-            builder.Services.AddDbContext<SchoolContext>(options =>
-            {
-                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=SchoolProject",
-                    providerOptions => providerOptions.EnableRetryOnFailure());
-            }
+           builder.Services.AddDbContext<SchoolContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection"),
+                providerOptions => providerOptions.EnableRetryOnFailure()
+            )
             );
 
             // Add scoped services : AuthService and AccountService.
@@ -100,13 +97,17 @@ namespace WebApi_SchoolProject
 
 
             var app = builder.Build();
+          
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                {
+                    app.UseSwagger();
+                    app.UseSwaggerUI();
+                }
+   
+
 
             app.UseHttpsRedirection();
 
@@ -117,6 +118,12 @@ namespace WebApi_SchoolProject
             app.MapControllers();
 
             app.Run();
+            
+
+        
         }
+
+        
     }
+
 }

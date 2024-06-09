@@ -1,7 +1,6 @@
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using MVC_SchoolProject.Services;
-using WebApi_SchoolProject.Services;
 using AuthService = MVC_SchoolProject.Services.AuthService;
 
 namespace MVC_SchoolProject
@@ -22,9 +21,9 @@ namespace MVC_SchoolProject
             // Add scoped services for AuthService and StudentService
             // Scoped lifetime means services are created once per request within the scope
 
-            builder.Services.AddScoped<MVC_SchoolProject.Services.AuthService>();
-            builder.Services.AddScoped<MVC_SchoolProject.Services.StudentService>();
-            builder.Services.AddScoped<MVC_SchoolProject.Services.AdminService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IStudentService, StudentService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
 
             // Add session support
             builder.Services.AddDistributedMemoryCache();

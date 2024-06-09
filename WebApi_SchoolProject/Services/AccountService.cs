@@ -9,12 +9,18 @@ namespace WebApi_SchoolProject.Services
     public class AccountService
     {
 
+        private readonly SchoolContext _context;
+        public AccountService(SchoolContext schoolContext)
+        {
+            _context = schoolContext;
+        }
+
         public void CreateUser( Guid uuid, string password)
         {
-            using var context = new SchoolContext();
+            
 
             //If the User doesn't exist in SAP, it's not possible to create his Account
-            var existingUser = context.SAPs.FirstOrDefault(a => a.UUID == uuid);
+            var existingUser = _context.SAPs.FirstOrDefault(a => a.UUID == uuid);
             if (existingUser == null)
             {
                 throw new InvalidOperationException("The user with this UUID doesn't exist.");
@@ -34,9 +40,9 @@ namespace WebApi_SchoolProject.Services
                 salt = salt 
             };
 
-            context.Add(newUser);
+            _context.Add(newUser);
             
-            context.SaveChanges();
+            _context.SaveChanges();
 
         }
     }
