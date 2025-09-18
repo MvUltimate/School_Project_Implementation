@@ -13,14 +13,17 @@
 
 ## Overview
 
-This repository contains the implementation of a school project composed of multiple subsystems:
+This repository is a complete demonstration of a multi‑layer school management system. It showcases how to build and connect different components of a modern .NET solution:
 
-* **DAL** – Data Access Layer for database operations.
-* **MVC\_SchoolProject** – Web application using the MVC pattern.
-* **WebApi\_SchoolProject** – REST API project.
-* **SeederTest** – Seeder or test data project.
+* Presentation Layer: An ASP.NET MVC web application providing the user interface for students, teachers, and administrators.
 
-The goal is to provide a complete full‑stack example including frontend, backend, API, and database layers, applying best practices such as separation of concerns and database seeding.
+* Business & API Layer: A RESTful Web API exposing services and core business logic to the MVC front‑end or other clients.
+
+* Data Access Layer (DAL): Centralized database access using Entity Framework, responsible for models, repositories, and data persistence.
+
+* Seeder & Testing: Utilities to populate the database with sample data and to validate functionality during development.
+
+The purpose of this project is to give a realistic example of how to design a scalable, maintainable, and testable enterprise application, covering every step from database to user interface.
 
 ---
 
